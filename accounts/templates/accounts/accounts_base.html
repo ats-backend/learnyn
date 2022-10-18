@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block title %}
+    <title></title>
+    {% endblock %}
+
+    <!-- Prevent the demo from appearing in search engines -->
+    <meta name="robots" content="noindex">
+
+    <!-- Perfect Scrollbar -->
+    <link type="text/css" href="{% static 'assets/vendor/perfect-scrollbar.css' %}" rel="stylesheet">
+
+    <!-- App CSS -->
+    <link type="text/css" href="{% static 'assets/css/app.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'assets/css/app.rtl.css' %}" rel="stylesheet">
+
+    <!-- Material Design Icons -->
+    <link type="text/css" href="{% static 'assets/css/vendor-material-icons.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'assets/css/vendor-material-icons.rtl.css' %}" rel="stylesheet">
+
+    <!-- Font Awesome FREE Icons -->
+    <link type="text/css" href="{% static 'assets/css/vendor-fontawesome-free.css' %}" rel="stylesheet">
+    <link type="text/css" href="{% static 'assets/css/vendor-fontawesome-free.rtl.css' %}" rel="stylesheet">
+
+</head>
+
+<body class="layout-login-centered-boxed">
+    {% block body %}
+    <div class="layout-login-centered-boxed__form">
+        <div class="d-flex flex-column justify-content-center align-items-center mt-2 mb-2 navbar-light">
+            <a href="/" class="navbar-brand text-center mb-2 mr-0" style="min-width: 0">
+                <img src="">
+                <h3>LEARNYN</h3>
+            </a>
+        </div>
+        {% block content %}
+
+        {% endblock %}
+    </div>
+    {% endblock %}
+
+</body>
+
+</html>
