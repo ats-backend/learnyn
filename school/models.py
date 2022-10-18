@@ -1,6 +1,5 @@
 from django.db import models
 
-from accounts.models import Teacher
 
 # Create your models here.
 class ActiveManager(models.Manager):
