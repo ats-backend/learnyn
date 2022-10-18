@@ -18,10 +18,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from .views import detail, index, profile, item_list, item_list_two, results
+from accounts.views import DashboardView
+
+from .views import detail, profile, item_list, item_list_two, results
 
 urlpatterns = [
-    path('', index),
+    path('', DashboardView.as_view(), name='dashboard'),
     path('profile', profile, name='profile'),
     path('list', item_list, name='list'),
     path('list-two', item_list_two, name='list-two'),
