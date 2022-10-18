@@ -1,10 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
-
-from accounts.models import Student, ClassAdmin
-
-
-# Create your models here.
 class ActiveManager(models.Manager):
     
     def get_queryset(self):
@@ -19,7 +15,7 @@ class InActiveManager(models.Manager):
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=50, null=True)
+    name = models.CharField(max_length=50, null=True,)
     is_active = models.BooleanField(default=True)
     
     objects = models.Manager()
@@ -29,6 +25,12 @@ class Subject(models.Model):
     
     def __str__(self):
         return self.name
+    
+    
+    def save(self, *args, **kwargs):       
+        if Subject.active_objects.filter(name=self.name).first():
+            raise ValidationError("Subject already exist")
+        return super(Subject, self).save(*args, **kwargs)
 
 
 class Classroom(models.Model):
@@ -51,20 +53,25 @@ class Classroom(models.Model):
     def __str__(self):
         return self.name
     
+    def save(self, *args, **kwargs):       
+        if Classroom.active_objects.filter(name=self.name, category=self.category).first():
+            raise ValidationError("Classroom already exist")
+        return super(Classroom, self).save(*args, **kwargs)
+    
     
     @property
     def number_of_students(self):
-        return Student.objects.filter(classroom_id=self.id).count()
+        return self.students.count()
     
     @property
     def students(self):
-        return Student.objects.filter(classroom_id=self.id)
+        return self.students.all()
     
     @property
     def class_admin(self):
-        return ClassAdmin.objects.get(classroom_id=self.id)
+        return self.teacher
     
     @property
     def number_of_subjects_offerred(self):
-        return self.subjects.all().count()
+        return self.subjects.count()
     

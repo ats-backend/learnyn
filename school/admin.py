@@ -5,7 +5,11 @@ from .models import Classroom, Subject
 
 
 class ClassRoomAdmin(admin.ModelAdmin):
-    list_display = ("name", "number_of_students", "class_admin", "number_of_subjects_offerred")
+    list_display = ("name", 
+                    "number_of_students", 
+                    "class_admin", 
+                    "number_of_subjects_offerred"
+                    )
     
     
     
