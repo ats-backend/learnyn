@@ -19,4 +19,7 @@ def item_list_two(request):
 def results(request):
     return render(request, 'results.html')
 
+def detail(request):
+    return render(request, 'detail.html')
+
 
