@@ -25,7 +25,7 @@ class Student(User):
     parent_email = models.EmailField(max_length=200)
 
 
-class Teacher(User):
+class ClassAdmin(User):
     classroom = models.OneToOneField(
         'Classroom',
         on_delete=models.CASCADE,
