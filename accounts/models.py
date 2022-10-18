@@ -1,22 +1,14 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from school.models import Classroom
 # Create your models here.
-
-
-# the classroom model is meant to be in the school app which has not been created
-# the only way to make migrations with for Student and Teacher models is to have their
-# related model created. So the Classroom model is only tentative till it exists in the school app
-
-
-class Classroom(models.Model):
-    pass
 
 
 class Student(User):
     student_id = models.CharField(max_length=10, unique=True)
     classroom = models.ForeignKey(
-        'Classroom',
+        Classroom,
         on_delete=models.CASCADE,
         related_name='students'
     )
@@ -27,7 +19,7 @@ class Student(User):
 
 class ClassAdmin(User):
     classroom = models.OneToOneField(
-        'Classroom',
+        Classroom,
         on_delete=models.CASCADE,
         related_name='teacher'
     )

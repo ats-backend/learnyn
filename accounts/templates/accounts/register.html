@@ -1,0 +1,69 @@
+{% extends 'accounts/accounts_base.html' %}
+{% block title %}
+    <title>Register - Learnyn</title>
+{% endblock %}
+{% block body %}
+
+    <div class="layout-login-centered-boxed__form" style="min-width: 40rem">
+        <div class="d-flex flex-column justify-content-center align-items-center mt-2 mb-2 navbar-light">
+            <a href="/" class="navbar-brand text-center mb-2 mr-0" style="min-width: 0">
+                <img src="">
+                <h3>LEARNYN</h3>
+            </a>
+        </div>
+
+        <div class="card card-body">
+
+            <!--- Message
+            <div class="alert alert-soft-success d-flex" role="alert">
+                <i class="material-icons mr-3">check_circle</i>
+                <div class="text-body">An email with password reset instructions has been sent to your email address, if it exists on our system.</div>
+            </div>
+            -->
+            <div class="card-title">
+                <h6 class="">Register as an administrator</h6>
+            </div>
+            <form method='POST'>
+                {% csrf_token %}
+                <div class='row'>
+                    <div class="form-group col-6">
+                        <label class="form-label" for="id_first_name">First Name</label>
+                        <div class="form-control-wrap">
+                            <input type="text" class="form-control form-control-lg" name="first_name" id="id_first_name" maxlength="150" placeholder="Enter your first name">
+                        </div>
+                    </div>
+                    <div class="form-group col-6">
+                    <label class="form-label" for="id_last_name">Last Name</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control form-control-lg" name="last_name" id="id_last_name" maxlength="150" placeholder="Enter your last name">
+                    </div>
+                </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="id_email">Email</label>
+                    <div class="form-control-wrap">
+                        <input type="email" class="form-control form-control-lg" name="email" id="id_email" maxlength="200" required placeholder="Enter your email address">
+                    </div>
+                </div>
+                <div class=row>
+                    <div class="form-group col-6">
+                        <label class="form-label" for="id_password1">Password</label>
+                        <div class="form-control-wrap">
+                            <input type="password" class="form-control form-control-lg" id="id_password1" name="password1" autocomplete="new-password" required placeholder="Enter your password">
+                        </div>
+                    </div>
+                    <div class="form-group col-6">
+                        <label class="form-label" for="id_password">Confirm Password</label>
+                        <div class="form-control-wrap">
+                            <input type="password" class="form-control form-control-lg" id="id_password2" name="password2" autocomplete="new-password" required placeholder="Confirm your password">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type='submit' class="btn btn-lg btn-primary btn-block" value="Register">
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
