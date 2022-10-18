@@ -29,6 +29,8 @@
     <!-- ion Range Slider -->
     <link type="text/css" href="{% static 'assets/css/vendor-ion-rangeslider.css' %}" rel="stylesheet">
     <link type="text/css" href="{% static 'assets/css/vendor-ion-rangeslider.rtl.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -660,7 +662,7 @@
                         <ul class="sidebar-menu mt-0">
 
                             <li class="sidebar-menu-item">
-                                <a class="sidebar-menu-button" href="{% url 'list' %}">
+                                <a class="sidebar-menu-button" href="{% url 'school:classroom_list' %}">
                                     <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">queue_play_next</i>
                                     <span class="sidebar-menu-text">Classrooms</span>
                                 </a>
