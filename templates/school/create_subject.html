@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+
+        <div class="page__heading border-bottom">
+            <div class="container-fluid page__container d-flex align-items-center">
+                {% if not instance %}
+                    <h1 class="mb-0">Create Subject</h1>
+                {% else %}
+                    <h1 class="mb-0">Update Subject</h1>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if not instance %}
+            <form action="{% url 'school:create_subject' %}" method="POST" enctype="multipart/form-data">
+        {% else %}
+            <form action="{% url 'school:update_subject' instance.id %}" method="POST" enctype="multipart/form-data">
+        {% endif %}
+
+            {% csrf_token %}
+        <div class="container-fluid page__container">
+
+
+            <div class="card card-form">
+                <div class="row no-gutters">
+                    <div class="col-lg-8 card-form__body card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="opass">Name</label>
+                                    {{ form.name}}
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+          
+            <div class="text-right mb-5">
+                <input type="submit" class="btn btn-success" value=Save>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

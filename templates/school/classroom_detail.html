@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+    <title>Classroom Dashboard</title>
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="hero-banner bg-primary d-flex flex-row align-items-center" style="height:250px;">
+        <div class="container-fluid page__container">
+            <div class="d-flex flex-column">
+                <div class="mb-1">
+                    <a href="{% url 'school:classroom_list' %}" class="badge badge-dark-gray text-white">Back to Classroom list</a>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-3">
+                        <img src="{% static 'assets/images/logos/rails.white.svg' %}" width="100" alt="rails logo">
+                    </div>
+                    <div>
+                        <h1 class="text-white mb-0">{{classroom.name}}</h1>
+                        <p class="lead text-white">{{classroom.category}}</p>
+                        <div class="my-2 text-white d-flex">
+                            <strong class="mr-4 "> Created {{classroom.date_created | timesince }} ago </strong>
+                            {% comment %} <strong><i class="material-icons icon-16pt icon-light">watch_later</i> 2:42</strong> {% endcomment %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-1">
+                    <a href="{% url 'school:update_classroom' classroom.id %}" class="btn btn-light btn-rounded mr-2">Update Classroom</a><a href="{% url 'school:delete_restore_classroom' classroom.id %}" class="btn btn-outline-light text-white btn-hover-primary btn-rounded"><i class="material-icons">local_activity</i> Delete Classroom</a>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid page__container">
+        <div class="row">
+            <div class="col-md-4 order-12">
+                <div class="card card-margin-md-negative-40">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-light">
+                            <a href="profile.html" class="flex d-flex align-items-center text-body text-underline-0">
+                                <span class="avatar mr-3">
+                                    {% comment %} <img src="assets/images/avatar/demi.png" alt="avatar" class="avatar-img rounded-circle"> {% endcomment %}
+                                </span>
+                                <span class="flex d-flex flex-column">
+                                    <strong>{{classroom.class_admin}}</strong>
+                                    <small class="text-muted text-uppercase">{{classroom.class_admin}}</small>
+                                </span>
+                            </a>
+                        </li>
+                        {% comment %} <li class="list-group-item">
+                            <span class="mr-2">
+                                <a href="#" class="rating-link active"><i class="material-icons">star</i></a>
+                                <a href="#" class="rating-link active"><i class="material-icons">star</i></a>
+                                <a href="#" class="rating-link active"><i class="material-icons">star</i></a>
+                                <a href="#" class="rating-link active"><i class="material-icons">star</i></a>
+                                <a href="#" class="rating-link active"><i class="material-icons">star_half</i></a>
+                            </span>
+                            <strong>4.7</strong>
+                            <span class="text-muted">(391 ratings)</span>
+                        </li>
+
+                        <li class="list-group-item">
+                            <strong>3872 people</strong> <span class="text-muted">completed this course</span>
+                        </li>
+
+                        <li class="list-group-item">
+                            <a href="" class="btn btn-facebook btn-rounded-social">
+                                <svg width="14px" style="fill: currentColor;" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <title>Facebook icon</title>
+                                    <path d="M22.676 0H1.324C.593 0 0 .593 0 1.324v21.352C0 23.408.593 24 1.324 24h11.494v-9.294H9.689v-3.621h3.129V8.41c0-3.099 1.894-4.785 4.659-4.785 1.325 0 2.464.097 2.796.141v3.24h-1.921c-1.5 0-1.792.721-1.792 1.771v2.311h3.584l-.465 3.63H16.56V24h6.115c.733 0 1.325-.592 1.325-1.324V1.324C24 .593 23.408 0 22.676 0" />
+                                </svg>
+                            </a>
+                            <a href="" class="btn btn-twitter btn-rounded-social">
+                                <svg width="14px" style="fill: currentColor;" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <title>Twitter icon</title>
+                                    <path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.723-.951.555-2.005.959-3.127 1.184-.896-.959-2.173-1.559-3.591-1.559-2.717 0-4.92 2.203-4.92 4.917 0 .39.045.765.127 1.124C7.691 8.094 4.066 6.13 1.64 3.161c-.427.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.248-2.228-.616v.061c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.916-.086.631 1.953 2.445 3.377 4.604 3.417-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63.961-.689 1.8-1.56 2.46-2.548l-.047-.02z" />
+                                </svg>
+                            </a>
+                            <a href="" class="btn btn-secondary btn-rounded-social">
+                                <i class="material-icons">mail</i>
+                            </a>
+                        </li> {% endcomment %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-8">
+
+                <div class="mb-3"><strong class="text-dark-gray">DESCRIPTION</strong></div>
+                <p class="mb-3">{{ classroom.description }}</p>
+
+                <div class="">
+                    <ul class="list-group list-lessons">
+                        <ul class="list-group list-lessons">
+                            <li class="list-group-item d-flex">
+                                <h3 >Students</h3>
+                               
+                            </li>
+                        {% for student in students %}
+                        <li class="list-group-item d-flex">
+                            <a href="#">{{student}}</a>
+                            <div class="ml-auto d-flex align-items-center">
+                                <a href="#"><span class="badge badge-success mr-2">View Result</span></a>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item d-flex">
+                            <p>No Students in this class </p>
+                            <div class="ml-auto d-flex align-items-center">
+                                {% comment %} <span class="badge badge-success mr-2">FREE</span>
+                                <span class="text-muted"><i class="material-icons icon-16pt icon-light">watch_later</i> 1:42</span> {% endcomment %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="">
+                    <ul class="list-group list-lessons">
+                        <li class="list-group-item d-flex">
+                            <h3 >Subjects Offerred</h3>
+                            <div class="ml-auto d-flex align-items-center">
+                                {% comment %} <span class="badge badge-success mr-2">FREE</span>
+                                <span class="text-muted"><i class="material-icons icon-16pt icon-light">watch_later</i> 1:42</span> {% endcomment %}
+                            </div>
+                        </li>
+                        {% for subject in classroom.subjects.all %}
+                        <li class="list-group-item d-flex">
+                            <h5 >{{forloop.counter}}. {{subject.name}}</h5>
+                            <div class="ml-auto d-flex align-items-center">
+                                {% comment %} <span class="badge badge-success mr-2">FREE</span>
+                                <span class="text-muted"><i class="material-icons icon-16pt icon-light">watch_later</i> 1:42</span> {% endcomment %}
+                            </div>
+                        </li>
+                        {% empty %}
+                        <p>No Students At The Moment !</p>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

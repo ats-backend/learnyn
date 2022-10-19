@@ -32,6 +32,8 @@
     <!-- ion Range Slider -->
     <link type="text/css" href="{% static 'assets/css/vendor-ion-rangeslider.css' %}" rel="stylesheet">
     <link type="text/css" href="{% static 'assets/css/vendor-ion-rangeslider.rtl.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -291,8 +293,14 @@
                                                 <img src="{%  static 'assets/images/frontted-logo-blue.svg' %}" width="43" height="43" alt="avatar">
                                             </span>
                                             <span class="flex d-flex flex-column">
-                                                <strong class="h5 m-0">Adrian D.</strong>
-                                                <small class="text-muted text-uppercase">STUDENT</small>
+                                                <strong class="h5 m-0">{{ request.user.first_name }} {{ request.user.last_name }}</strong>
+                                                {% if request.user.is_superuser %}
+                                                    <small class="text-muted text-uppercase">School Admin</small>
+                                                {% elif request.user.student_id %}
+                                                    <small class="text-muted text-uppercase">Student</small>
+                                                {% else %}
+                                                    <small class="text-muted text-uppercase">Class Admin</small>
+                                                {% endif %}
                                             </span>
 
                                         </div>
@@ -300,7 +308,7 @@
                                         <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'profile' %}">
                                             <span class="material-icons mr-2">account_circle</span> Edit Account
                                         </a>
-                                        <a class="dropdown-item d-flex align-items-center py-2" href="login.html">
+                                        <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'accounts:logout' %}">
                                             <span class="material-icons mr-2">exit_to_app</span> Logout
                                         </a>
                                     </div>
@@ -642,8 +650,7 @@
                                 </svg>
                             </span>
                             <span class="flex d-flex flex-column">
-                                <span class="sidebar-brand">Edusta</span>
-                                <small>Next Generation</small>
+                                <span class="sidebar-brand">LEARNYN</span>
                             </span>
                         </a>
                     </div>
@@ -661,19 +668,35 @@
 
                     <div class="sidebar-block p-0">
                         <ul class="sidebar-menu mt-0">
-
+                            {% if request.user.is_superuser %}
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="{% url 'school:classroom_list' %}">
+                                        <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">queue_play_next</i>
+                                        <span class="sidebar-menu-text">Classrooms</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="{% url 'school:classroom_details' request.user.classroom.id %}">
+                                        <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">queue_play_next</i>
+                                        <span class="sidebar-menu-text">Classroom</span>
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li class="sidebar-menu-item">
-                                <a class="sidebar-menu-button" href="{% url 'list' %}">
-                                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">queue_play_next</i>
-                                    <span class="sidebar-menu-text">Classrooms</span>
-                                </a>
-                            </li>
-                            <li class="sidebar-menu-item">
-                                <a class="sidebar-menu-button" href="{% url 'list' %}">
+                                <a class="sidebar-menu-button" href="{% url 'class_admins' %}">
                                     <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">shopping_cart</i>
                                     <span class="sidebar-menu-text">Class Admins</span>
                                 </a>
                             </li>
+
+                            <li class="sidebar-menu-item">
+                                <a class="sidebar-menu-button" href="{% url 'school:subject_list' %}">
+                                    <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">queue_play_next</i>
+                                    <span class="sidebar-menu-text">Subjects</span>
+                                </a>
+                            </li>
+
                             <li class="sidebar-menu-item">
                                 <a class="sidebar-menu-button" href="{% url 'list' %}">
                                     <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dns</i>
@@ -688,7 +711,7 @@
                             </li>
 
                             <li class="sidebar-menu-item">
-                                <a class="sidebar-menu-button" href="login.html">
+                                <a class="sidebar-menu-button" href="{% url 'accounts:logout' %}">
                                     <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">exit_to_app</i>
                                     <span class="sidebar-menu-text">Logout</span>
                                 </a>

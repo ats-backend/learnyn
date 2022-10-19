@@ -18,12 +18,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from accounts.views import DashboardView
+from accounts.views import AddClassAdminView, DashboardView, ClassAdminListView, ClassAdminDetailView
 
 from .views import detail, profile, item_list, item_list_two, results
 
 urlpatterns = [
     path('', DashboardView.as_view(), name='dashboard'),
+    path('class-admins', ClassAdminListView.as_view(), name='class_admins'),
+    path('class-admins/<int:pk>', ClassAdminDetailView.as_view(), name='class_admin_detail'),
+    path('class-admins/add', AddClassAdminView.as_view(), name='add_class_admins'),
+    path('students', ClassAdminListView.as_view(), name='students'),
     path('profile', profile, name='profile'),
     path('list', item_list, name='list'),
     path('list-two', item_list_two, name='list-two'),
@@ -32,5 +36,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('result/', include('results.urls')),
     path('admin/', admin.site.urls),
+    path("school/", include("school.urls"))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
