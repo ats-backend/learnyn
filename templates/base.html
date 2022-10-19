@@ -291,8 +291,14 @@
                                                 <img src="{%  static 'assets/images/frontted-logo-blue.svg' %}" width="43" height="43" alt="avatar">
                                             </span>
                                             <span class="flex d-flex flex-column">
-                                                <strong class="h5 m-0">Adrian D.</strong>
-                                                <small class="text-muted text-uppercase">STUDENT</small>
+                                                <strong class="h5 m-0">{{ request.user.first_name }} {{ request.user.last_name }}</strong>
+                                                {% if request.user.is_superuser %}
+                                                    <small class="text-muted text-uppercase">School Admin</small>
+                                                {% elif request.user.student_id %}
+                                                    <small class="text-muted text-uppercase">Student</small>
+                                                {% else %}
+                                                    <small class="text-muted text-uppercase">Class Admin</small>
+                                                {% endif %}
                                             </span>
 
                                         </div>
@@ -642,8 +648,7 @@
                                 </svg>
                             </span>
                             <span class="flex d-flex flex-column">
-                                <span class="sidebar-brand">Edusta</span>
-                                <small>Next Generation</small>
+                                <span class="sidebar-brand">LEARNYN</span>
                             </span>
                         </a>
                     </div>
@@ -669,7 +674,7 @@
                                 </a>
                             </li>
                             <li class="sidebar-menu-item">
-                                <a class="sidebar-menu-button" href="{% url 'list' %}">
+                                <a class="sidebar-menu-button" href="{% url 'class_admins' %}">
                                     <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">shopping_cart</i>
                                     <span class="sidebar-menu-text">Class Admins</span>
                                 </a>

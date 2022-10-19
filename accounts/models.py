@@ -16,6 +16,9 @@ class Student(User):
     parent_lastname = models.CharField(max_length=40)
     parent_email = models.EmailField(max_length=200)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class ClassAdmin(User):
     classroom = models.OneToOneField(
@@ -23,4 +26,7 @@ class ClassAdmin(User):
         on_delete=models.CASCADE,
         related_name='teacher'
     )
+    is_suspended = models.BooleanField(default=False)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
