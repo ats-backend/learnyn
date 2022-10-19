@@ -43,7 +43,7 @@
                 <div class="form-group col-6">
                     <label class="form-label" for="id_email">Email</label>
                     <div class="form-control-wrap">
-                        <input type="email" class="form-control form-control-lg" name="email" id="id_email" maxlength="200" autofocus required placeholder="Enter your email address">
+                        <input type="email" class="form-control form-control-lg" name="email" id="id_email" maxlength="200" required placeholder="Enter your email address">
                     </div>
                     {% if form.email.errors %}
                         {% for error in form.email.errors %}

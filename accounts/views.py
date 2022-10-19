@@ -1,16 +1,17 @@
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User, Permission
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponseRedirect
 from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, FormView
 from django.shortcuts import render, reverse
 
-from school.models import Classroom
-
-from .forms import LoginForm, SignUpForm, ClassAdminForm
+from .forms import LoginForm, SignUpForm, ClassAdminForm, PasswordForm, StudentForm
 from .models import ClassAdmin, Student
+from helpers.utils import send_mail
+from school.models import Classroom
 
 
 # Create your views here.
@@ -65,6 +66,18 @@ class SignupView(FormView):
         )
 
 
+class SetPasswordView(FormView):
+    form_class = PasswordForm
+    template_name = 'accounts/set_password.html'
+
+    def form_valid(self, form):
+        user_id = self.kwargs.get('pk')
+        password = form.cleaned_data.get('password2')
+        user = User.objects.filter(id=user_id).first()
+        user.set_password(password)
+        user.save()
+
+
 class ProfileView(DetailView):
     model = User
 
@@ -89,36 +102,58 @@ class AddClassAdminView(PermissionRequiredMixin, FormView):
     permission_required = 'classadmin.can_add_user'
 
     def form_valid(self, form):
-        print(form.cleaned_data)
-        classroom_name = form.cleaned_data.pop('classroom')
-        email = form.cleaned_data.get('email')
-        username = email.split('@')[0]
-        class_admin = form.save(username=username)
-        classroom = Classroom.objects.filter(name__iexact=classroom_name).first()
-        class_admin.classroom.add(classroom)
+        classroom_id = form.cleaned_data.pop('classroom')
+        class_admin = ClassAdmin.objects.create(
+            classroom_id=classroom_id,
+            **form.cleaned_data
+        )
+        subject = "Welcome to Learnyn, your new account is ready"
+        password_url = reverse('accounts:set-password', args=[class_admin.id])
+        action_url = str(get_current_site(self.request)) + password_url
+        send_mail(
+            receiver=class_admin,
+            subject=subject,
+            action_url=action_url
+        )
 
         return HttpResponseRedirect(
             reverse('class_admins')
         )
 
 
-class AddStudentView(PermissionRequiredMixin, CreateView):
-    model = Student
-    permission_required = 'student.can_add_user'
-    fields = (
-        'first_name',
-        'last_name',
-        'email',
-        'parent_firstname'
-        'parent_lastname'
-        'parent_email'
-    )
+class AddStudentView(LoginRequiredMixin, FormView):
+    form_class = StudentForm
+    template_name = 'accounts/add_student_form.html'
 
     def form_valid(self, form):
         print(form.cleaned_data)
-        email = form.cleaned_data.get('email')
-        username = email.split('@')[0]
-        student = form.save(username=username)
-        return HttpResponseRedirect(
-            reverse('class_admins')
+        class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
+        if form.cleaned_data.get('classroom'):
+            classroom_id = form.cleaned_data.get('classroom').id
+        else:
+            classroom_id = class_admin.classroom.id
+        student = Student.objects.create(
+            classroom_id=classroom_id,
+            **form.cleaned_data
         )
+        id2string = str(student.id).zfill(4)
+        student_id = f"LYN-STD-{id2string}"
+        student.student_id = student_id
+        student.save()
+        subject = "Welcome to Learnyn, your new student account is ready"
+        password_url = reverse('accounts:set-password', args=[student.id])
+        action_url = str(get_current_site(self.request)) + password_url
+        send_mail(
+            receiver=student,
+            subject=subject,
+            action_url=action_url
+        )
+
+        return HttpResponseRedirect(
+            reverse('students')
+        )
+
+
+class StudentListView(LoginRequiredMixin, ListView):
+    model = Student
+    template_name = 'accounts/student_list.html'
