@@ -27,10 +27,10 @@ class Subject(models.Model):
         return self.name
     
     
-    def save(self, *args, **kwargs):       
-        if Subject.active_objects.filter(name=self.name).first():
-            raise ValidationError("Subject already exist")
-        return super(Subject, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):       
+    #     if Subject.active_objects.filter(name=self.name).first():
+    #         raise ValidationError("Subject already exist")
+    #     return super(Subject, self).save(*args, **kwargs)
 
 
 class Classroom(models.Model):
@@ -53,10 +53,10 @@ class Classroom(models.Model):
     def __str__(self):
         return self.name
     
-    def save(self, *args, **kwargs):       
-        if Classroom.active_objects.filter(name=self.name, category=self.category).first():
-            raise ValidationError("Classroom already exist")
-        return super(Classroom, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):       
+    #     if Classroom.active_objects.filter(name=self.name, category=self.category).first():
+    #         raise ValidationError("Classroom already exist")
+    #     return super(Classroom, self).save(*args, **kwargs)
     
     
     @property
@@ -64,14 +64,10 @@ class Classroom(models.Model):
         return self.students.count()
     
     @property
-    def students(self):
-        return self.students.all()
-    
-    @property
     def class_admin(self):
         return self.teacher
     
     @property
     def number_of_subjects_offerred(self):
-        return self.subjects.count()
+        return self.subjects.all().count()
     

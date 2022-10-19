@@ -1,36 +1,25 @@
 {% extends 'base.html' %}
 {% load static %}
-
-
-{% block title %}
-    <title>Classroom Dashboard</title>
-{% endblock %}
-
-
 {% block content %}
 
     <div class="hero-banner bg-primary d-flex flex-row align-items-center" style="height:250px;">
         <div class="container-fluid page__container">
             <div class="d-flex flex-column">
-                <div class="mb-1">
-                    <a href="{% url 'school:classroom_list' %}" class="badge badge-dark-gray text-white">Back to Classroom list</a>
-                </div>
                 <div class="d-flex align-items-center mb-3">
                     <div class="mr-3">
                         <img src="{% static 'assets/images/logos/rails.white.svg' %}" width="100" alt="rails logo">
                     </div>
                     <div>
-                        <h1 class="text-white mb-0">{{classroom.name}}</h1>
-                        <p class="lead text-white">{{classroom.category}}</p>
+                        <h1 class="text-white mb-0">Subjects</h1>
+                        <p class="lead text-white">A list of all the Subjects offerred in the School</p>
                         <div class="my-2 text-white d-flex">
-                            <strong class="mr-4 "> Created {{classroom.date_created | timesince }} ago </strong>
-                            {% comment %} <strong><i class="material-icons icon-16pt icon-light">watch_later</i> 2:42</strong> {% endcomment %}
+                            
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-1">
-                    <a href="{% url 'school:update_classroom' classroom.id %}" class="btn btn-light btn-rounded mr-2">Update Classroom</a><a href="{% url 'school:delete_restore_classroom' classroom.id %}" class="btn btn-outline-light text-white btn-hover-primary btn-rounded"><i class="material-icons">local_activity</i> Delete Classroom</a>
+                 <div class="mt-1">
+                    <a href="{% url 'school:create_classroom' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> New Subject</a>
                 </div> 
             </div>
         </div>
@@ -38,21 +27,21 @@
 
     <div class="container-fluid page__container">
         <div class="row">
-            <div class="col-md-4 order-12">
+            {% comment %} <div class="col-md-4 order-12">
                 <div class="card card-margin-md-negative-40">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item bg-light">
                             <a href="profile.html" class="flex d-flex align-items-center text-body text-underline-0">
                                 <span class="avatar mr-3">
-                                    {% comment %} <img src="assets/images/avatar/demi.png" alt="avatar" class="avatar-img rounded-circle"> {% endcomment %}
+                                    <img src="assets/images/avatar/demi.png" alt="avatar" class="avatar-img rounded-circle">
                                 </span>
                                 <span class="flex d-flex flex-column">
-                                    <strong>{{classroom.class_admin}}</strong>
-                                    <small class="text-muted text-uppercase">{{classroom.class_admin}}</small>
+                                    <strong>Adrian Demian</strong>
+                                    <small class="text-muted text-uppercase">AUTHOR</small>
                                 </span>
                             </a>
                         </li>
-                        {% comment %} <li class="list-group-item">
+                        <li class="list-group-item">
                             <span class="mr-2">
                                 <a href="#" class="rating-link active"><i class="material-icons">star</i></a>
                                 <a href="#" class="rating-link active"><i class="material-icons">star</i></a>
@@ -67,7 +56,6 @@
                         <li class="list-group-item">
                             <strong>3872 people</strong> <span class="text-muted">completed this course</span>
                         </li>
-
                         <li class="list-group-item">
                             <a href="" class="btn btn-facebook btn-rounded-social">
                                 <svg width="14px" style="fill: currentColor;" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -84,61 +72,38 @@
                             <a href="" class="btn btn-secondary btn-rounded-social">
                                 <i class="material-icons">mail</i>
                             </a>
-                        </li> {% endcomment %}
+                        </li>
                     </ul>
                 </div>
-            </div>
+            </div> {% endcomment %}
             <div class="col-md-8">
 
-                <div class="mb-3"><strong class="text-dark-gray">DESCRIPTION</strong></div>
-                <p class="mb-3">{{ classroom.description }}</p>
+                {% comment %} <div class="mb-3"><strong class="text-dark-gray">DESCRIPTION</strong></div> {% endcomment %}
+                {% comment %} <p class="mb-3">
+                    This course is for Rails newbies and anyone looking to get a solid foundation. It’s designed to teach you everything you need to start building web applications in Rails right away.
+                </p> {% endcomment %}
+
 
                 <div class="">
                     <ul class="list-group list-lessons">
-                        <ul class="list-group list-lessons">
+                        <li class="list-group-item d-flex">
+                            <h3>Subjects</h3>
+                        </li>
+                        {% for subject in subjects %}
                             <li class="list-group-item d-flex">
-                                <h3 >Students</h3>
-                               
+                                <p><strong>{{forloop.counter}}. </strong>{{ subject.name }}</p>
+                                <div class="ml-auto d-flex align-items-center">
+                                    <a href="{% url 'school:update_subject' subject.id %}" ><span class="badge badge-success mr-2">Update</span></a>
+                                    <a href="{% url 'school:delete_restore_subject' subject.id %}" ><span class="badge badge-danger mr-2">Delete</span></a>
+                                </div>
                             </li>
-                        {% for student in students %}
-                        <li class="list-group-item d-flex">
-                            <a href="#">{{student}}</a>
-                            <div class="ml-auto d-flex align-items-center">
-                                <a href="#"><span class="badge badge-success mr-2">View Result</span></a>
-                            </div>
-                        </li>
                         {% empty %}
-                        <li class="list-group-item d-flex">
-                            <p>No Students in this class </p>
-                            <div class="ml-auto d-flex align-items-center">
-                                {% comment %} <span class="badge badge-success mr-2">FREE</span>
-                                <span class="text-muted"><i class="material-icons icon-16pt icon-light">watch_later</i> 1:42</span> {% endcomment %}
-                            </div>
-                        </li>
+                            <li class="list-group-item d-flex">
+                                <h3>No Subjects At The Moment.</h3>
+                                
+                            </li>
                         {% endfor %}
-                    </ul>
-                </div>
-
-                <div class="">
-                    <ul class="list-group list-lessons">
-                        <li class="list-group-item d-flex">
-                            <h3 >Subjects Offerred</h3>
-                            <div class="ml-auto d-flex align-items-center">
-                                {% comment %} <span class="badge badge-success mr-2">FREE</span>
-                                <span class="text-muted"><i class="material-icons icon-16pt icon-light">watch_later</i> 1:42</span> {% endcomment %}
-                            </div>
-                        </li>
-                        {% for subject in classroom.subjects.all %}
-                        <li class="list-group-item d-flex">
-                            <h5 >{{forloop.counter}}. {{subject.name}}</h5>
-                            <div class="ml-auto d-flex align-items-center">
-                                {% comment %} <span class="badge badge-success mr-2">FREE</span>
-                                <span class="text-muted"><i class="material-icons icon-16pt icon-light">watch_later</i> 1:42</span> {% endcomment %}
-                            </div>
-                        </li>
-                        {% empty %}
-                        <p>No Students At The Moment !</p>
-                        {% endfor %}
+                       
                     </ul>
                 </div>
             </div>
