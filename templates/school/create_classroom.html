@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Create Classroom</title>
+{% endblock %}
+
+
+{% block content %}
+
+        <div class="page__heading border-bottom">
+            <div class="container-fluid page__container d-flex align-items-center">
+                {% if not instance %}
+                    <h1 class="mb-0">Create Classroom</h1>
+                {% else %}
+                    <h1 class="mb-0">Update Classroom</h1>
+                 {% endif %}   
+
+            </div>
+        </div>
+
+        {% if not instance %}
+            <form action="{% url 'school:create_classroom' %}" method="POST" enctype="multipart/form-data">
+        {% else %}        
+            <form action="{% url 'school:update_classroom' instance.id %}" method="POST" enctype="multipart/form-data">
+        {% endif %}        
+            {% csrf_token %}
+            <div class="container-fluid page__container">
+                <div class="card card-form">
+                    <div class="row no-gutters">
+                        <div class="col-lg-4 card-body">
+                            <p><strong class="headings-color">Basic Class Information</strong></p>
+                        </div>
+                        <div class="col-lg-8 card-form__body card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="fname">Name</label>
+                                        {% comment %} <input type="text" class="form-control" placeholder="Name of classroom" name="name"> {% endcomment %}
+                                        {{ form.name }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="desc">Description</label>
+                                {% comment %} <textarea id="desc" rows="4" class="form-control" placeholder="Description" name="description"></textarea> {% endcomment %}
+                                {{ form.description }}
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label><br />
+                                {{ form.category }}
+                            </div>
+                            <div class="form-group">
+                                <label for="subscribe">Offered Subjects</label><br>
+                                {{ form.subjects }} 
+                            </div>
+
+                            {% comment %} <div class="form-group">
+                                <label>Class Picture</label>
+                                <div class="dz-clickable media align-items-center" data-toggle="dropzone" data-dropzone-url="http://" data-dropzone-clickable=".dz-clickable" data-dropzone-files='["assets/images/account-add-photo.svg"]'>
+                                    <div class="dz-preview dz-file-preview dz-clickable mr-3">
+                                        <div class="avatar avatar-lg">
+                                            <img src="assets/images/account-add-photo.svg" class="avatar-img rounded" alt="..." data-dz-thumbnail>
+                                        </div>
+                                    </div>
+                                    <div class="media-body">
+                                        <button class="btn btn-sm btn-primary dz-clickable">Choose photo</button>
+                                    </div>
+                                </div>
+                            </div> {% endcomment %}
+
+
+                            <div class="text-right mb-5">
+                                <input type="submit" class="btn btn-success" value=Save>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+            
+            </div>
+        </form>
+    
+{% endblock %}
