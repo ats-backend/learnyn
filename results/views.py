@@ -15,6 +15,7 @@ class ResultDetailView(View):
 
     def get(self, request):
         token = Token.objects.create(student=request.user)
+        print(token)
 
         context = {
             'token': token
