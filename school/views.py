@@ -38,21 +38,21 @@ class ClassRoomDetailView(DetailView):
 
 
 def create_subject(request):
-    
     if request.method == "POST":
-        form = ClassroomForm(request.POST)
+        print("hey")
+        form = SubjectForm(request.POST)
         
         if form.is_valid():
             form.save()
             
             messages.success(request, "Subject created successfully")
-            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+            return HttpResponseRedirect(reverse("school:subject_list"))
         
         errors = (form.errors.as_text()).split("*")
         messages.error(request, errors[len(errors) - 1])
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
     
-    return
+    return render(request, "school/create_subject.html", {"form": SubjectForm()})
 
 
 def update_subject(request, pk):
@@ -63,19 +63,19 @@ def update_subject(request, pk):
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
         
     
-    if request.method == "GET":
+    if request.method == "POST":
         form = SubjectForm(request.POST, instance=subject)
         
         if form.is_valid():
             form.save()
             
             messages.success(request, f"{subject.name} updated successfully")
-            return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+            return HttpResponseRedirect(reverse("school:subject_list"))
         
         errors = (form.errors.as_text()).split("*")
         messages.error(request, errors[len(errors) - 1])
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-    return
+    return render(request, "school/create_subject.html", {"form": SubjectForm(instance=subject), "instance": subject})
 
 
 
@@ -91,6 +91,10 @@ class DeleteRestoreSubjectView(View):
         instance.save()
         
         if not instance.is_active:
+            for classroom in Classroom.active_objects.all():
+                if  instance in classroom.subjects.all():
+                    classroom.subjects.remove(instance)
+                    classroom.save()
             messages.success(request, f"{instance.name} deleted successfully !")
         else:
             messages.error(request, f"{instance.name} restored successfully !")
