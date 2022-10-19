@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="page__heading border-bottom">
+        <div class="container-fluid page__container d-flex align-items-center">
+            <h1 class="mb-0">Add Class Admin</h1>
+        </div>
+    </div>
+    <div class="container-fluid page__container">
+        {% if form.errors%}
+                {% for field in form%}
+                    {%for error in field.errors%}
+                        <p class='alert alert-danger'>{{error}}</p>
+                    {%endfor%}
+                {%endfor%}
+            {% endif %}
+        <form method='POST'>
+        {% csrf_token %}
+            <div class='row'>
+                <div class="form-group col-6">
+                    <label class="form-label" for="id_first_name">First Name</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control form-control-lg" name="first_name" id="id_first_name" maxlength="150" placeholder="Enter your first name">
+                    </div>
+                    {% if form.first_name.errors %}
+                        {% for error in form.first_name.errors %}
+                            <p class='alert alert-danger'>{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group col-6">
+                    <label class="form-label" for="id_last_name">Last Name</label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control form-control-lg" name="last_name" id="id_last_name" maxlength="150" placeholder="Enter your last name">
+                    </div>
+                    {% if form.last_name.errors %}
+                        {% for error in form.last_name.errors %}
+                            <p class='alert alert-danger'>{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label class="form-label" for="id_email">Email</label>
+                    <div class="form-control-wrap">
+                        <input type="email" class="form-control form-control-lg" name="email" id="id_email" maxlength="200" autofocus required placeholder="Enter your email address">
+                    </div>
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <p class='alert alert-danger'>{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group col-6">
+                    <label class="form-label" for="id_classroom">Class</label>
+                    <div class="form-control-wrap">
+                        {{ form.classroom }}
+                    </div>
+                    {% if form.classroom.errors %}
+                        {% for error in form.classroom.errors %}
+                            <p class='alert alert-danger'>{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        <div class="form-group">
+            <input type='submit' class="btn btn-lg btn-primary btn-block" value="Register">
+        </div>
+    </form>
+
+
+    </div>
+{% endblock %}

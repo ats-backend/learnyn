@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 
+from school.models import Classroom
+
+from .models import ClassAdmin
+
 
 class SignUpForm(UserCreationForm):
     username = forms.CharField(required=False)
@@ -56,3 +60,19 @@ class LoginForm(forms.Form):
                 "Invalid email or password, please try again"
             )
         return self.cleaned_data
+
+
+class ClassAdminForm(forms.ModelForm):
+    classroom = forms.ModelChoiceField(
+        queryset=Classroom.active_objects.all(),
+        widget=forms.Select(attrs={'class': "form-control form-control-lg"})
+    )
+
+    class Meta:
+        model = ClassAdmin
+        fields = (
+            'first_name',
+            'last_name',
+            'email',
+            'classroom'
+        )

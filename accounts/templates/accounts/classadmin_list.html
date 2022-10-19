@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title %}
+    <title>Class Admins - Learnyn</title>
+{% endblock %}
+
 {% block content %}
 
     <div class="page__heading border-bottom">
         <div class="container-fluid page__container d-flex align-items-center">
-            <h1 class="mb-0">Items</h1>
+            <h1 class="mb-0">Class Admins</h1>
+            <a href="{% url 'add_class_admins' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> Add Class Admin</a>
         </div>
     </div>
 
