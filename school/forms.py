@@ -13,21 +13,21 @@ class SubjectForm(forms.ModelForm):
                 "class": "form-control"
             })
         }
-        
+
 
 class ClassroomForm(forms.ModelForm):
     class Meta:
         model = Classroom
-        exclude = ( "is_active", "date_created" )
+        exclude = ("is_active", "date_created")
         widgets = {
             "name": forms.TextInput(attrs={
-               'class': "form-control" 
+                'class': "form-control"
             }),
-            
+
             "description": forms.Textarea(attrs={
                 "class": "form-control"
             }),
-            
+
             # "subjects": forms.ChoiceWidget(attrs={
             #     "class": "form-control"
             # }),
