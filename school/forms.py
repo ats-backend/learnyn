@@ -1,3 +1,4 @@
+from tkinter import Widget
 from django import forms
 
 from .models import Subject, Classroom
@@ -7,6 +8,11 @@ class SubjectForm(forms.ModelForm):
     class Meta:
         model = Subject
         fields = ("name",)
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "class": "form-control"
+            })
+        }
         
 
 class ClassroomForm(forms.ModelForm):
