@@ -28,10 +28,12 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="mt-1">
-                    <a href="{% url 'school:update_classroom' classroom.id %}" class="btn btn-light btn-rounded mr-2">Update Classroom</a><a href="{% url 'school:delete_restore_classroom' classroom.id %}" class="btn btn-outline-light text-white btn-hover-primary btn-rounded"><i class="material-icons">local_activity</i> Delete Classroom</a>
-                </div> 
+                
+                {% if request.user.is_superuser %}
+                    <div class="mt-1">
+                        <a href="{% url 'school:update_classroom' classroom.id %}" class="btn btn-light btn-rounded mr-2">Update Classroom</a><a href="{% url 'school:delete_restore_classroom' classroom.id %}" class="btn btn-outline-light text-white btn-hover-primary btn-rounded"><i class="material-icons">local_activity</i> Delete Classroom</a>
+                    </div> 
+                {% endif %}
             </div>
         </div>
     </div>

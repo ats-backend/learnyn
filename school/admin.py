@@ -12,6 +12,12 @@ class ClassRoomAdmin(admin.ModelAdmin):
                     )
     
     
+# class SubjectAdmin(admin.ModelAdmin):
+#     def formfield_for_manytomany(self, db_field, request, **kwargs):
+#         kwargs["queryset"] = Subject.objects.filter(is_active=True)
+#         return super(ClassRoomAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+    
+    
     
 admin.site.register(Classroom, ClassRoomAdmin)
-admin.site.register(Subject)
+admin.site.register(Subject, )
