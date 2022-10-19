@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="page__heading border-bottom">
+        <div class="container-fluid page__container d-flex align-items-center">
+            <h1 class="mb-0">Result</h1>
+        </div>
+    </div>
+
+    <div class="container-fluid page__container">
+
+
+        <div class="card">
+
+
+            <div class="table-responsive border-bottom" data-toggle="lists"
+                 data-lists-values='["js-lists-values-employee-name"]'>
+
+                <table class="table mb-0 thead-border-top-0">
+                    <thead>
+                    <tr>
+
+                        <th>Name</th>
+                        <th>Student Name</th>
+
+                    </tr>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>12345</th>
+                    </tr>
+
+                    </thead>
+                    <tbody class="list" id="staff">
+
+                    <tr class="selected">
+
+
+                        <td>
+
+                            <div class="media align-items-center">
+
+                                <div class="media-body">
+
+                                    <span class="js-lists-values-employee-name">Michael Smith</span>
+
+                                </div>
+                            </div>
+
+                        </td>
+
+                        <td>
+                            <div class="media align-items-center">
+                                <a href="">Black Ops</a>
+                            </div>
+                        </td>
+
+
+                    </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <!-- Vector Maps -->
+    <script src="{% static 'assets/vendor/jqvmap/jquery.vmap.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/jqvmap/maps/jquery.vmap.world.js' %}"></script>
+    <script src="{% static 'assets/js/vector-maps.js' %}"></script>
+
+{% endblock %}
