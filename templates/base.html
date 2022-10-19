@@ -677,7 +677,7 @@
                                 </li>
                             {% else %}
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href="{% url 'school:classroom_details' request.user.classroom.id %}">
+                                    <a class="sidebar-menu-button" href="{% url 'school:classroom_details' curent_user.classroom.id %}">
                                         <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">queue_play_next</i>
                                         <span class="sidebar-menu-text">Classroom</span>
                                     </a>
@@ -698,7 +698,7 @@
                             </li>
 
                             <li class="sidebar-menu-item">
-                                <a class="sidebar-menu-button" href="{% url 'list' %}">
+                                <a class="sidebar-menu-button" href="{% url 'students' %}">
                                     <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dns</i>
                                     <span class="sidebar-menu-text">Students</span>
                                 </a>

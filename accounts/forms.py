@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 from school.models import Classroom
 
-from .models import ClassAdmin
+from .models import ClassAdmin, Student
 
 
 class SignUpForm(UserCreationForm):
@@ -76,3 +76,53 @@ class ClassAdminForm(forms.ModelForm):
             'email',
             'classroom'
         )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError(
+                "A user with that email already exist"
+            )
+        return email
+
+
+class PasswordForm(forms.Form):
+    password1 = forms.CharField(widget=forms.PasswordInput(), required=True)
+    password2 = forms.CharField(widget=forms.PasswordInput(), required=True)
+
+    def clean(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password2 != password1:
+            raise ValidationError(
+                "The passwords must match"
+            )
+        return self.cleaned_data
+
+
+class StudentForm(forms.ModelForm):
+    classroom = forms.ModelChoiceField(
+        queryset=Classroom.active_objects.all(),
+        widget=forms.Select(attrs={'class': "form-control form-control-lg"}),
+        required=False
+    )
+
+    class Meta:
+        model = Student
+        fields = (
+            'first_name',
+            'last_name',
+            'email',
+            'parent_firstname',
+            'parent_lastname',
+            'parent_email',
+            'classroom'
+        )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError(
+                "A user with that email already exist"
+            )
+        return email

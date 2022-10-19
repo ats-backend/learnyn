@@ -18,9 +18,12 @@
                     </div>
                 </div>
 
-                 <div class="mt-1">
-                    <a href="{% url 'school:create_subject' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> New Subject</a>
-                </div> 
+
+                {% if request.user.is_superuser %}
+                    <div class="mt-1">
+                        <a href="{% url 'school:create_subject' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> New Subject</a>
+                    </div> 
+                {% endif %}
             </div>
         </div>
     </div>
@@ -92,10 +95,12 @@
                         {% for subject in subjects %}
                             <li class="list-group-item d-flex">
                                 <p><strong>{{forloop.counter}}. </strong>{{ subject.name }}</p>
-                                <div class="ml-auto d-flex align-items-center">
-                                    <a href="{% url 'school:update_subject' subject.id %}" ><span class="badge badge-success mr-2">Update</span></a>
-                                    <a href="{% url 'school:delete_restore_subject' subject.id %}" ><span class="badge badge-danger mr-2">Delete</span></a>
-                                </div>
+                                {% if request.user.is_superuser %}
+                                    <div class="ml-auto d-flex align-items-center">
+                                        <a href="{% url 'school:update_subject' subject.id %}" ><span class="badge badge-success mr-2">Update</span></a>
+                                        <a href="{% url 'school:delete_restore_subject' subject.id %}" ><span class="badge badge-danger mr-2">Delete</span></a>
+                                    </div>
+                                {% endif %}
                             </li>
                         {% empty %}
                             <li class="list-group-item d-flex">
