@@ -67,7 +67,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'accounts.context_processors.get_current_user'
+                'accounts.context_processors.get_current_user',
+                'accounts.context_processors.delete_old_token'
             ],
         },
     },

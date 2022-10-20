@@ -45,9 +45,9 @@
             <div class="col-md-3">
                 <div class="card card__course">
                     <div class="card-header card-header-large card-header-dark bg-dark d-flex justify-content-center">
-                        <a class="card-header__title  justify-content-center align-self-center d-flex flex-column" href="#">
+                        <a class="card-header__title  justify-content-center align-self-center d-flex flex-column" href="{% url 'school:classroom_details' classroom.id %}">
                             <span><img src="{% static 'assets/images/logos/classroom.png' %}" class="mb-1" style="width:50px;" alt="logo"></span>
-                            <span class="course__title">{{classroom.name}}</span>
+                            {% comment %} <span class="course__title">{{classroom.name}}</span> {% endcomment %}
                             {% comment %} <span class="course__subtitle">{{classroom.class_admin}}</span> {% endcomment %}
                         </a>
                     </div>
@@ -61,7 +61,7 @@
                         </div>
 
                         <div class="d-flex align-items-center">
-                            <strong class="h4 m-0">{{classroom.class_admin}}</strong>
+                            <strong class="h4 m-0">{{classroom.name}}</strong>
                             <a href="{% url 'school:classroom_details' classroom.id %}" class="btn btn-primary ml-auto"><i class="material-icons"><span class="material-icons-outlined">
                                 visibility
                                 </span></i></a>

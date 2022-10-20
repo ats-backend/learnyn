@@ -50,3 +50,9 @@ def set_username(sender, instance, **kwargs):
     if not instance.username:
         username = instance.email.split('@')[0]
         instance.username = username
+
+
+class ResetPasswordToken(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    token = models.CharField(max_length=4, null=True, unique=True)
+    date_created = models.DateTimeField(auto_now_add=True)

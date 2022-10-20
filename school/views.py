@@ -8,19 +8,21 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Classroom, Subject
 from .forms import ClassroomForm, SubjectForm
-from accounts.models import Student
+from accounts.models import Student, ClassAdmin
+from accounts.views import ClassroomMixin
 
 
 # Create your views here.
 
 def check_superuser(request):
     if not request.user.is_superuser:
-        return HttpResponseForbidden()
+        return HttpResponseForbidden("403.html")
 
 
 class ClassRoomListView(LoginRequiredMixin, ListView):
     model = Classroom
-    template_name = "school/classroom_list.html"
+    # template_name = "school/classroom_list.html"
+    template_name = "403.html"
     login_url = "accounts:login"
 
     # queryset = Classroom.active_objects.all()
@@ -194,12 +196,19 @@ class DeleteRestoreClassroomView(LoginRequiredMixin, UserPassesTestMixin, View):
         return HttpResponseRedirect(reverse("school:classroom_list"))
 
 
-class SubjectsListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+class SubjectsListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Subject
     template_name = "school/subjects_dashboard.html"
-    queryset = Subject.active_objects.all()
+    # queryset = Subject.active_objects.all()
     context_object_name = "subjects"
     login_url = "accounts:login"
 
     def test_func(self):
-        return self.request.user.is_superuser
+        return bool(self.request.user.is_superuser or self.is_class_admin)
+    
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Subject.active_objects.all()
+        class_admin = ClassAdmin.objects.filter(id=self.request.user.id)
+        return class_admin.classroom.subjects.all()
+        
