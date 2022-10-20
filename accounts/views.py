@@ -1,6 +1,6 @@
 from random import randint
 
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Permission
 from django.contrib.sites.shortcuts import get_current_site
@@ -275,6 +275,7 @@ def new_password(request, uid):
                 user.password = make_password(password1)
                 user.save()
 
+                update_session_auth_hash(request, user)
                 messages.success(request, "Password changed Successfully")
                 return HttpResponseRedirect(reverse("accounts:login"))
 
