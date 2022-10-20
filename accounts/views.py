@@ -50,13 +50,14 @@ class LoginView(FormView):
     template_name = 'accounts/login.html'
 
     def form_valid(self, form):
+        print("Got called")
         email = form.cleaned_data.get('email')
         password = form.cleaned_data.get('password')
         username = email.split('@')[0]
         user = authenticate(username=username, password=password)
         login(self.request, user)
         return HttpResponseRedirect(
-            reverse('dashboard')
+            reverse('home')
         )
 
 
@@ -85,7 +86,7 @@ class SignupView(FormView):
         # user = authenticate(username=username, password=password)
         login(self.request, user)
         return HttpResponseRedirect(
-            reverse('dashboard')
+            reverse('home')
         )
 
 
@@ -97,18 +98,30 @@ class SetPasswordView(FormView):
         user_id = self.kwargs.get('pk')
         password = form.cleaned_data.get('password2')
         user = User.objects.filter(id=user_id).first()
+        print(password)
         user.set_password(password)
         user.save()
+        return HttpResponseRedirect(
+            reverse('accounts:login')
+        )
 
 
 class ProfileView(DetailView):
     model = User
 
 
-class DashboardView(LoginRequiredMixin, View):
+class HomeView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'base.html')
+        classrooms = Classroom.active_objects.count()
+        class_admins = ClassAdmin.active_objects.count()
+        students = Student.active_objects.count()
+        context = {
+            'all_students': students,
+            'all_class_admins': class_admins,
+            'all_classrooms': classrooms,
+        }
+        return render(request, 'index.html', context)
 
 
 class ClassAdminListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
@@ -116,6 +129,9 @@ class ClassAdminListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin
 
     def test_func(self):
         return self.request.user.is_superuser
+
+    def get_queryset(self):
+        return ClassAdmin.objects.all()
 
 
 class ClassAdminDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
@@ -288,7 +304,7 @@ def new_password(request, uid):
 
         messages.error(request, "Password cannot be empty")
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
-    return render(request, "accounts/new_password.html", {"uid": uid})
+    return render(request, "accounts/set_password.html", {"uid": uid})
 
 
 class SuspendClassAdmin(ClassroomMixin, LoginRequiredMixin, View):

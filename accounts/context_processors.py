@@ -13,7 +13,13 @@ def get_current_user(request):
     else:
         current_user = None
 
-    return dict(curent_user=current_user)
+    return dict(current_user=current_user)
+
+
+def check_class_admin(request):
+    is_class_admin = ClassAdmin.objects.filter(id=request.user.id).exists()
+
+    return dict(is_class_admin=is_class_admin)
 
 
 def delete_old_token(request):

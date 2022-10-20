@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from accounts.views import (
-    AddClassAdminView, AddStudentView, AssignClassAdmin, DashboardView,
+    AddClassAdminView, AddStudentView, AssignClassAdmin, HomeView,
     ClassAdminListView, ClassAdminDetailView, StudentListView,
     StudentDetailView, SuspendClassAdmin, UnassignClassAdmin
 )
@@ -27,7 +27,7 @@ from accounts.views import (
 from .views import detail, profile, item_list, item_list_two, results
 
 urlpatterns = [
-    path('', DashboardView.as_view(), name='dashboard'),
+    path('', HomeView.as_view(), name='home'),
     path('class-admins', ClassAdminListView.as_view(), name='class_admins'),
     path('class-admins/<int:pk>', ClassAdminDetailView.as_view(), name='class_admin_detail'),
     path('class-admins/add', AddClassAdminView.as_view(), name='add_class_admins'),
