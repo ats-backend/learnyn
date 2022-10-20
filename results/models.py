@@ -9,8 +9,11 @@ from school.models import Subject
 
 class Result(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    subject = models.OneToOneField(Subject, on_delete=models.CASCADE, null=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, null=True)
     score = models.DecimalField(decimal_places=2, max_digits=4)
+
+    class Meta:
+        unique_together = ('student', 'subject')
 
     def __str__(self):
         return self.student.student_id

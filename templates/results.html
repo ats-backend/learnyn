@@ -32,7 +32,7 @@
                     </tr>
                     </thead>
                     <tbody class="list" id="staff">
-
+                    {% for student in students %}
                     <tr class="selected">
 
 
@@ -42,7 +42,7 @@
 
                                 <div class="media-body">
 
-                                    <span class="js-lists-values-employee-name">Michael Smith</span>
+                                    <span class="js-lists-values-employee-name"><a href="{% url 'results:result_detail' student.id %}">{{ student.first_name }}</a></span>
 
                                 </div>
                             </div>
@@ -51,13 +51,14 @@
 
                         <td>
                             <div class="media align-items-center">
-                                <a href="">Black Ops</a>
+                                {{ student.classroom.name }}
                             </div>
                         </td>
 
-                        <td>12</td>
+                        <td>{{ student.classroom.number_of_subjects_offerred }}</td>
 
                     </tr>
+                    {% endfor %}
 
 
                     </tbody>

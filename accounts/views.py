@@ -104,7 +104,7 @@ class AddClassAdminView(PermissionRequiredMixin, FormView):
     def form_valid(self, form):
         classroom_id = form.cleaned_data.pop('classroom')
         class_admin = ClassAdmin.objects.create(
-            classroom_id=classroom_id,
+            classroom_id=classroom_id.id,
             **form.cleaned_data
         )
         subject = "Welcome to Learnyn, your new account is ready"

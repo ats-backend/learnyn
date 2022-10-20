@@ -40,9 +40,8 @@ urlpatterns = [
     path('list', item_list, name='list'),
     path('list-two', item_list_two, name='list-two'),
     path('detail', detail, name='detail'),
-    path('results', results, name='results'),
     path('accounts/', include('accounts.urls')),
-    path('result/', include('results.urls')),
+    path('results/', include('results.urls')),
     path('admin/', admin.site.urls),
     path("school/", include("school.urls"))
 

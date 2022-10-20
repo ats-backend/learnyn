@@ -5,6 +5,8 @@
     <div class="page__heading border-bottom">
         <div class="container-fluid page__container d-flex align-items-center">
             <h1 class="mb-0">Result</h1>
+              {% if not results %}<a href="{% url 'results:add-result' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> Add Result</a>{% endif %}
+              {% if results %}<a href="{% url 'results:pdf' student.id %}" class="btn btn-success ml-auto">Download Result</a>{% endif %}
         </div>
     </div>
 
@@ -16,23 +18,24 @@
 
             <div class="table-responsive border-bottom" data-toggle="lists"
                  data-lists-values='["js-lists-values-employee-name"]'>
-
+                 {% if results %}
                 <table class="table mb-0 thead-border-top-0">
                     <thead>
                     <tr>
 
                         <th>Name</th>
-                        <th>Student Name</th>
+                        <th>{{ student.first_name }}, {{ student.last_name }}</th>
 
                     </tr>
                     <tr>
                         <th>Student ID</th>
-                        <th>12345</th>
+                        <th>{{ student.student_id }}</th>
                     </tr>
 
                     </thead>
                     <tbody class="list" id="staff">
 
+                    {% for result in results %}
                     <tr class="selected">
 
 
@@ -42,7 +45,7 @@
 
                                 <div class="media-body">
 
-                                    <span class="js-lists-values-employee-name">Michael Smith</span>
+                                    <span class="js-lists-values-employee-name">{{ result.subject.name }}</span>
 
                                 </div>
                             </div>
@@ -51,16 +54,20 @@
 
                         <td>
                             <div class="media align-items-center">
-                                <a href="">Black Ops</a>
+                                {{ result.score }}
                             </div>
                         </td>
 
 
                     </tr>
+                    {% endfor %}
 
 
                     </tbody>
                 </table>
+             {% else %}
+                    <p class="text-center">No result yet</p>
+                    {% endif %}
             </div>
 
 
