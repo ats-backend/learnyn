@@ -21,8 +21,8 @@ def check_superuser(request):
 
 class ClassRoomListView(LoginRequiredMixin, ListView):
     model = Classroom
-    # template_name = "school/classroom_list.html"
-    template_name = "403.html"
+    template_name = "school/classroom_list.html"
+    # template_name = "403.html"
     login_url = "accounts:login"
 
     # queryset = Classroom.active_objects.all()
