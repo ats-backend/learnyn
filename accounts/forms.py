@@ -126,3 +126,12 @@ class StudentForm(forms.ModelForm):
                 "A user with that email already exist"
             )
         return email
+
+
+# class ClassroomForm(forms.ModelForm):
+#
+#     class Meta:
+#         model = Classroom
+#         fields = (
+#             'id'
+#         )

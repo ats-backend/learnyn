@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import User, Permission
 from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Q
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, FormView
@@ -32,6 +32,11 @@ class ClassroomMixin:
             Q(id=self.kwargs.get('pk'))
         ).exists()
         return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['classes'] = Classroom.objects.all()
+        return context
 
 
 class LoginView(FormView):
@@ -200,4 +205,48 @@ class StudentDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin,
         return self.request.user.is_superuser or self.is_class_admin or self.is_student
 
 
+class SuspendClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def post(self, request, pk, *args, **kwargs):
+        class_admin = ClassAdmin.objects.filter(id=pk).first()
+        class_admin.is_suspended = not class_admin.is_suspended
+        class_admin.save()
+
+        return HttpResponseRedirect(
+            reverse('class_admins')
+        )
+
+
+class UnassignClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def post(self, request, pk, *args, **kwargs):
+        class_admin = ClassAdmin.objects.filter(id=pk).first()
+        class_admin.classroom = None
+        class_admin.save()
+
+        return HttpResponseRedirect(
+            reverse('class_admins')
+        )
+
+
+class AssignClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def post(self, request, pk, *args, **kwargs):
+        classroom_id = request.POST.get('classroom_id')
+        class_admin = ClassAdmin.objects.filter(id=pk).first()
+        class_admin.classroom_id = classroom_id
+        class_admin.save()
+
+        return JsonResponse({
+            'redirect_url': reverse('class_admins')
+        })
 

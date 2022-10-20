@@ -36,7 +36,8 @@ class ClassAdmin(User):
     classroom = models.OneToOneField(
         Classroom,
         on_delete=models.CASCADE,
-        related_name='teacher'
+        related_name='teacher',
+        null=True
     )
     is_suspended = models.BooleanField(default=False)
 

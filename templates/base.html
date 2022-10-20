@@ -89,21 +89,12 @@
     <!-- Vector Maps -->
     <link type="text/css" href="{% static 'assets/vendor/jqvmap/jqvmap.min.css' %}" rel="stylesheet">
 
+    <link type="text/css" href="{% static 'assets/style.css' %}" rel="stylesheet">
 
 
 </head>
 
 <body class="layout-default">
-
-
-
-
-
-
-
-
-
-
 
     <div class="mdk-drawer-layout js-mdk-drawer-layout" data-push data-responsive-width="992px" data-fullbleed>
         <div class="mdk-drawer-layout__content">
@@ -305,9 +296,9 @@
 
                                         </div>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'profile' %}">
-                                            <span class="material-icons mr-2">account_circle</span> Edit Account
-                                        </a>
+{#                                        <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'profile' %}">#}
+{#                                            <span class="material-icons mr-2">account_circle</span> Edit Account#}
+{#                                        </a>#}
                                         <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'accounts:logout' %}">
                                             <span class="material-icons mr-2">exit_to_app</span> Logout
                                         </a>
@@ -750,16 +741,7 @@
     </div>
     <!-- // END drawer-layout -->
 
-    <!-- App Settings FAB -->
-    <div id="app-settings">
-        <app-settings layout-active="default" :layout-location="{
-      'default': 'index.html',
-      'fixed': 'fixed-index.html',
-      'fluid': 'fluid-index.html',
-      'mini': 'mini-index.html'
-    }"></app-settings>
-    </div>
-
+    <script src="{% static 'assets/js/bundle.js' %}"></script>
     <!-- jQuery -->
     <script src="{% static 'assets/vendor/jquery.min.js' %}"></script>
 
