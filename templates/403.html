@@ -1,0 +1,17 @@
+{% extends "base.html" %}   
+{% load static %}
+
+<link rel="stylesheet" type="text/css" src="{% static 'styles/403/style.css' %}">
+
+
+{% block content %}
+<link rel="stylesheet" type="text/css" src="{% static 'styles/403/style.css' %}">
+
+<div class="wrapper">
+    <div class="box">
+    <h1>403</h1>
+    <p>Sorry, it's not allowed to go beyond this point!</p>
+    <p><a href="{{ request.META.HTTP_REFERER }}">Please, go back this way.</a></p>
+    </div>
+    </div>
+{% endblock %}
