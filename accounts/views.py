@@ -1,8 +1,9 @@
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Permission
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponseRedirect
+from django.db.models import Q
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.views import View
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, FormView
@@ -15,6 +16,22 @@ from school.models import Classroom
 
 
 # Create your views here.
+
+
+class ClassroomMixin:
+
+    def dispatch(self, request, *args, **kwargs):
+        self.class_admin = ClassAdmin.objects.filter(
+            id=request.user.id
+        ).first()
+        self.is_class_admin = ClassAdmin.objects.filter(
+            id=request.user.id
+        ).exists()
+        self.is_student = Student.objects.filter(
+            Q(id=request.user.id) &
+            Q(id=self.kwargs.get('pk'))
+        ).exists()
+        return super().dispatch(request, *args, **kwargs)
 
 
 class LoginView(FormView):
@@ -46,10 +63,6 @@ class SignupView(FormView):
     template_name = 'accounts/register.html'
 
     def form_valid(self, form):
-        permission = Permission.objects.get(
-            content_type__model='classadmin',
-            name='Can add user'
-        )
         email = form.cleaned_data.get('email')
         # password = form.cleaned_data.get('password2')
         username = email.split('@')[0]
@@ -57,7 +70,6 @@ class SignupView(FormView):
         user.username = username
         user.is_staff = True
         user.is_superuser = True
-        user.user_permissions.add(permission)
         user.save()
         # user = authenticate(username=username, password=password)
         login(self.request, user)
@@ -88,18 +100,26 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, 'base.html')
 
 
-class ClassAdminListView(LoginRequiredMixin, ListView):
+class ClassAdminListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = ClassAdmin
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class ClassAdminDetailView(LoginRequiredMixin, DetailView):
+
+class ClassAdminDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = ClassAdmin
 
+    def test_func(self):
+        return self.request.user.is_superuser or self.is_class_admin
 
-class AddClassAdminView(PermissionRequiredMixin, FormView):
+
+class AddClassAdminView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, FormView):
     form_class = ClassAdminForm
     template_name = 'accounts/classadmin_form.html'
-    permission_required = 'classadmin.can_add_user'
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def form_valid(self, form):
         classroom_id = form.cleaned_data.pop('classroom')
@@ -121,9 +141,12 @@ class AddClassAdminView(PermissionRequiredMixin, FormView):
         )
 
 
-class AddStudentView(LoginRequiredMixin, FormView):
+class AddStudentView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, FormView):
     form_class = StudentForm
     template_name = 'accounts/add_student_form.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.is_class_admin
 
     def form_valid(self, form):
         print(form.cleaned_data)
@@ -154,6 +177,27 @@ class AddStudentView(LoginRequiredMixin, FormView):
         )
 
 
-class StudentListView(LoginRequiredMixin, ListView):
+class StudentListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Student
     template_name = 'accounts/student_list.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.is_class_admin
+
+    def get_queryset(self):
+        if self.request.user.is_superuser:
+            return Student.objects.all()
+
+        class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
+        return class_admin.classroom.students.all()
+
+
+class StudentDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    model = Student
+    template_name = 'accounts/student_detail.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser or self.is_class_admin or self.is_student
+
+
+

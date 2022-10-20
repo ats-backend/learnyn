@@ -26,7 +26,7 @@ class Student(User):
 
 
 @receiver(pre_save, sender=Student)
-def set_username(instance, **kwargs):
+def set_username(sender, instance, **kwargs):
     if not instance.username:
         username = instance.email.split('@')[0]
         instance.username = username
@@ -45,7 +45,7 @@ class ClassAdmin(User):
 
 
 @receiver(pre_save, sender=ClassAdmin)
-def set_username(self, instance, **kwargs):
+def set_username(sender, instance, **kwargs):
     if not instance.username:
         username = instance.email.split('@')[0]
         instance.username = username
