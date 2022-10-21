@@ -37,13 +37,13 @@ class ClassRoomListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ClassRoomDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class ClassRoomDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Classroom
     template_name = "school/classroom_detail.html"
     login_url = "accounts:login"
 
     def test_func(self, **kwargs):
-        return bool(self.request.user.is_superuser or self.request.user.classroom.id == self.kwargs["pk"])
+        return bool(self.request.user.is_superuser or self.is_class_admin)
 
     def get_context_data(self, **kwargs):
         context = super(ClassRoomDetailView, self).get_context_data(**kwargs)
@@ -209,6 +209,6 @@ class SubjectsListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, 
     def get_queryset(self):
         if self.request.user.is_superuser:
             return Subject.active_objects.all()
-        class_admin = ClassAdmin.objects.filter(id=self.request.user.id)
+        class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
         return class_admin.classroom.subjects.all()
         
