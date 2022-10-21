@@ -1,0 +1,153 @@
+<! DOCTYPE html>
+<html>
+<head>
+    <title>Result table</title>
+</head>
+<body>
+    <style>
+                body {
+            font-weight: 200;
+            font-size: 14px;
+        }
+
+        .header {
+            font-size: 20px;
+            font-weight: 100;
+            text-align: center;
+            color: #007cae;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 100;
+            /* text-align: right;*/
+            padding: 10px 20px 0px 20px;
+        }
+
+        .title span {
+            color: #007cae;
+        }
+
+        .details {
+            padding: 10px 20px 0px 20px;
+            text-align: left !important;
+            /*margin-left: 40%;*/
+        }
+
+        .hrItem {
+            border: none;
+            height: 1px;
+            /* Set the hr color */
+            color: #333; /* old IE */
+            background-color: #fff; /* Modern Browsers */
+        }
+
+        table{
+            border: 1px solid black;
+            padding: 1px;
+            margin: 5px;
+            position: absolute;
+            top: 30%;
+            left: 30%
+        }
+        td,tr,th{
+            border: 1px solid black;
+        }
+    </style>
+{#    {% if data %}#}
+{#    <table>#}
+{#        <caption>Report Card of {{ customer_name }}.</caption>#}
+{#        <thead>#}
+{#            <th id="table--header">#}
+{#                <!-- <td>S/N</td> -->#}
+{#                <td>subject</td>#}
+{#                <td>Grade</td>#}
+{#            </th>#}
+{#        </thead>#}
+{#        <tbody>#}
+{##}
+{#            <tr class="table--row">#}
+{#                <td>{{ order_id }}</td>#}
+{#                <td></td>#}
+{#                <td></td>#}
+{#            </tr>#}
+{#            {% else %}#}
+{##}
+{#                <p style="font-weight: bold; font-size: xxx-large; text-align: center">No Result Available At The Moment</p>#}
+{##}
+{#            {% endif %}#}
+{#        </tbody>#}
+{#    </table>#}
+
+
+
+<div class="container-fluid page__container">
+
+
+        <div class="card">
+
+
+            <div class="table-responsive border-bottom" data-toggle="lists"
+                 data-lists-values='["js-lists-values-employee-name"]'>
+                 {% if results %}
+                <table class="table mb-0 thead-border-top-0">
+                    <thead>
+                    <tr>
+
+                        <th>Name</th>
+                        <th>{{ student.first_name }}, {{ student.last_name }}</th>
+
+                    </tr>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>{{ student.student_id }}</th>
+                    </tr>
+
+                    </thead>
+                    <tbody class="list" id="staff">
+
+                    {% for result in results %}
+                    <tr class="selected">
+
+
+                        <td>
+
+                            <div class="media align-items-center">
+
+                                <div class="media-body">
+
+                                    <span class="js-lists-values-employee-name">{{ result.subject.name }}</span>
+
+                                </div>
+                            </div>
+
+                        </td>
+
+                        <td>
+                            <div class="media align-items-center">
+                                {{ result.score }}
+                            </div>
+                        </td>
+
+
+                    </tr>
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+             {% else %}
+                    <p class="text-center">No result yet</p>
+                    {% endif %}
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+
+
+</body>
+</html>

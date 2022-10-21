@@ -30,6 +30,9 @@ class Student(User):
     active_objects = ActiveObject()
     objects = models.Manager()
 
+    class Meta:
+        ordering = ['first_name']
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
@@ -52,6 +55,9 @@ class ClassAdmin(User):
 
     active_objects = ActiveObject()
     objects = models.Manager()
+
+    class Meta:
+        ordering = ['first_name']
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

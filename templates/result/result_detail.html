@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="page__heading border-bottom">
+        <div class="container-fluid page__container d-flex align-items-center">
+            <h1 class="mb-0">Result</h1>
+              {% if not results %}<a href="{% url 'results:add-result' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> Add Result</a>{% endif %}
+              {% if results %}<a href="{% url 'results:pdf' student.id %}" class="btn btn-success ml-auto">Download Result</a>{% endif %}
+        </div>
+    </div>
+
+    <div class="container-fluid page__container">
+
+
+        <div class="card">
+
+
+            <div class="table-responsive border-bottom" data-toggle="lists"
+                 data-lists-values='["js-lists-values-employee-name"]'>
+                 {% if results %}
+                <table class="table mb-0 thead-border-top-0">
+                    <thead>
+                    <tr>
+
+                        <th>Name</th>
+                        <th>{{ student.first_name }}, {{ student.last_name }}</th>
+
+                    </tr>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>{{ student.student_id }}</th>
+                    </tr>
+
+                    </thead>
+                    <tbody class="list" id="staff">
+
+                    {% for result in results %}
+                    <tr class="selected">
+
+
+                        <td>
+
+                            <div class="media align-items-center">
+
+                                <div class="media-body">
+
+                                    <span class="js-lists-values-employee-name">{{ result.subject.name }}</span>
+
+                                </div>
+                            </div>
+
+                        </td>
+
+                        <td>
+                            <div class="media align-items-center">
+                                {{ result.score }}
+                            </div>
+                        </td>
+
+
+                    </tr>
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+             {% else %}
+                    <p class="text-center">No result yet</p>
+                    {% endif %}
+            </div>
+
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <!-- Vector Maps -->
+    <script src="{% static 'assets/vendor/jqvmap/jquery.vmap.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/jqvmap/maps/jquery.vmap.world.js' %}"></script>
+    <script src="{% static 'assets/js/vector-maps.js' %}"></script>
+
+{% endblock %}

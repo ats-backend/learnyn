@@ -19,9 +19,10 @@ from django.contrib import admin
 from django.urls import include, path
 
 from accounts.views import (
-    AddClassAdminView, AddStudentView, AssignClassAdmin, HomeView,
-    ClassAdminListView, ClassAdminDetailView, StudentListView,
-    StudentDetailView, SuspendClassAdmin, UnassignClassAdmin
+    AddClassAdminView, AddStudentView, AssignClassAdmin,
+    ClassAdminListView, ClassAdminDetailView, DownloadStudentDataView,
+    HomeView, StudentListView, StudentDetailView, SuspendClassAdmin,
+    SuspendStudent, UnassignClassAdmin
 )
 
 from .views import detail, profile, item_list, item_list_two, results
@@ -36,14 +37,16 @@ urlpatterns = [
     path('class-admins/<int:pk>/assign', AssignClassAdmin.as_view(), name='assign_class_admin'),
     path('students', StudentListView.as_view(), name='students'),
     path('students/<int:pk>', StudentDetailView.as_view(), name='student_detail'),
+    path('students/<int:pk>/suspend', SuspendStudent.as_view(), name='suspend_student'),
     path('students/add', AddStudentView.as_view(), name='add_student'),
+    path('classroom/<int:pk>/students/download', DownloadStudentDataView.as_view(), name='download_student_data'),
 
     path('profile', profile, name='profile'),
     path('list', item_list, name='list'),
     path('list-two', item_list_two, name='list-two'),
     path('detail', detail, name='detail'),
-    path('results', results, name='results'),
     path('accounts/', include('accounts.urls')),
+    path('results/', include('results.urls')),
     path('admin/', admin.site.urls),
     path("school/", include("school.urls"))
 
