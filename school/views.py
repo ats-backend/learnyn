@@ -209,6 +209,6 @@ class SubjectsListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, 
     def get_queryset(self):
         if self.request.user.is_superuser:
             return Subject.active_objects.all()
-        class_admin = ClassAdmin.objects.filter(id=self.request.user.id)
+        class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
         return class_admin.classroom.subjects.all()
         
