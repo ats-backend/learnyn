@@ -1,3 +1,4 @@
+import csv
 from random import randint
 
 from django.contrib import messages
@@ -126,12 +127,35 @@ class HomeView(LoginRequiredMixin, View):
 
 class ClassAdminListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = ClassAdmin
+    paginate_by = 12
 
     def test_func(self):
         return self.request.user.is_superuser
 
     def get_queryset(self):
         return ClassAdmin.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        if self.request.GET.get('query'):
+            search_query = self.request.GET.get('query')
+            context['classadmin_list'] = ClassAdmin.objects.filter(
+                Q(first_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(classroom__name__icontains=search_query)
+            )
+
+        if self.request.GET.get('classroom'):
+            classroom_id = self.request.GET.get('classroom')
+            context['classadmin_list'] = ClassAdmin.objects.filter(
+                classroom_id=classroom_id
+            )
+        if self.request.GET.get('is_suspended'):
+            is_suspended = self.request.GET.get('is_suspended')
+            context['classadmin_list'] = ClassAdmin.objects.filter(
+                is_suspended=is_suspended
+            )
+        return context
 
 
 class ClassAdminDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
@@ -207,6 +231,7 @@ class AddStudentView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, Fo
 class StudentListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Student
     template_name = 'accounts/student_list.html'
+    paginate_by = 12
 
     def test_func(self):
         return self.request.user.is_superuser or self.is_class_admin
@@ -217,6 +242,27 @@ class StudentListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, L
 
         class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
         return class_admin.classroom.students.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        if self.request.GET.get('query'):
+            search_query = self.request.GET.get('query')
+            context['student_list'] = Student.objects.filter(
+                Q(first_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(classroom__name__icontains=search_query)
+            )
+        if self.request.GET.get('classroom'):
+            classroom_id = self.request.GET.get('classroom')
+            context['student_list'] = Student.objects.filter(
+                classroom_id=classroom_id
+            )
+        if self.request.GET.get('is_suspended'):
+            is_suspended = self.request.GET.get('is_suspended')
+            context['student_list'] = Student.objects.filter(
+                is_suspended=is_suspended
+            )
+        return context
 
 
 class StudentDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
@@ -322,6 +368,21 @@ class SuspendClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
         )
 
 
+class SuspendStudent(ClassroomMixin, LoginRequiredMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def post(self, request, pk, *args, **kwargs):
+        student = Student.objects.filter(id=pk).first()
+        student.is_suspended = not student.is_suspended
+        student.save()
+
+        return HttpResponseRedirect(
+            reverse('students')
+        )
+
+
 class UnassignClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
 
     def test_func(self):
@@ -352,3 +413,21 @@ class AssignClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
             'redirect_url': reverse('class_admins')
         })
 
+
+class DownloadStudentDataView(View):
+
+    def get(self, request, pk, *args, **kwargs):
+        students = Student.objects.filter(classroom_id=pk)
+        classroom = Classroom.objects.filter(id=pk)
+        with open(rf'learnyn\static\students_subjects_data\{classroom.name}_subjects.csv', 'w') as f:
+            headers = ["student_id", "subjects", "score"]
+            handler = csv.DictWriter(f, fieldnames=headers)
+            handler.writeheader()
+            for student in students:
+                for subject in student.classroom.subjects.all():
+                    handler.writerows([{
+                        'student_id': student.student_id,
+                        'subjects': subject.name,
+                        'score': ''
+                    }])
+        return
