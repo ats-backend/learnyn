@@ -216,7 +216,7 @@ class SubjectsListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, 
 class SessionListView(ListView):
     model = Session
     template_name = "school/session_dashboard.html"
-    queryset = Session.active_objects.all()
+    queryset = Session.objects.all()
     context_object_name = 'sessions'
 
 
