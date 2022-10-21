@@ -7,6 +7,10 @@ from school.models import Classroom
 
 
 # Create your models here.
+class ActiveObject(models.Manager):
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_suspended=False)
 
 
 class Student(User):
@@ -21,12 +25,16 @@ class Student(User):
     parent_email = models.EmailField(max_length=200)
     is_suspended = models.BooleanField(default=False)
 
+    active_objects = ActiveObject()
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ['first_name']
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
-
 @receiver(pre_save, sender=Student)
-def set_username(instance, **kwargs):
+def set_username(sender, instance, **kwargs):
     if not instance.username:
         username = instance.email.split('@')[0]
         instance.username = username
@@ -36,16 +44,27 @@ class ClassAdmin(User):
     classroom = models.OneToOneField(
         Classroom,
         on_delete=models.CASCADE,
-        related_name='teacher'
+        related_name='teacher',
+        null=True
     )
     is_suspended = models.BooleanField(default=False)
 
+    active_objects = ActiveObject()
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ['first_name']
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
-
 @receiver(pre_save, sender=ClassAdmin)
-def set_username(instance, **kwargs):
+def set_username(sender, instance, **kwargs):
     if not instance.username:
         username = instance.email.split('@')[0]
         instance.username = username
+
+
+class ResetPasswordToken(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    token = models.CharField(max_length=4, null=True, unique=True)
+    date_created = models.DateTimeField(auto_now_add=True)
