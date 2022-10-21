@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.core.exceptions import ValidationError
 
@@ -14,6 +16,37 @@ class InActiveManager(models.Manager):
         return super().get_queryset().filter(is_active=False)
 
 
+first = f"{(datetime.datetime.today() - datetime.timedelta(days=365)).year}/{datetime.datetime.today().year}"
+second = f"{datetime.datetime.today().year}/{(datetime.datetime.today() + datetime.timedelta(days=365)).year}"
+
+
+class Session(models.Model):
+    SESSION_CHOICES = (
+        (first, first),
+        (second, second)
+    )
+    name_of_session = models.CharField(max_length=32, null=True, choices=SESSION_CHOICES, unique=True)
+
+    def __str__(self):
+        return self.name_of_session
+
+
+class Term(models.Model):
+    TERM_CHOICES = (
+        ("First Term", "First Term"),
+        ("Second Term", "Second Term"),
+        ("Third Term", "Third Term")
+    )
+    session = models.ForeignKey(Session, null=True, on_delete=models.CASCADE)
+    term = models.CharField(choices=TERM_CHOICES, max_length=32, null=True)
+
+    def __str__(self):
+        return self.term
+
+    class Meta:
+        unique_together = ("session", "term")
+
+
 class Subject(models.Model):
     name = models.CharField(max_length=50, null=True, )
     is_active = models.BooleanField(default=True)
@@ -25,7 +58,7 @@ class Subject(models.Model):
     def __str__(self):
         return self.name
 
-    # def save(self, *args, **kwargs):       
+    # def save(self, *args, **kwargs):
     #     if Subject.active_objects.filter(name=self.name).first():
     #         raise ValidationError("Subject already exist")
     #     return super(Subject, self).save(*args, **kwargs)
@@ -51,7 +84,7 @@ class Classroom(models.Model):
     def __str__(self):
         return self.name
 
-    # def save(self, *args, **kwargs):       
+    # def save(self, *args, **kwargs):
     #     if Classroom.active_objects.filter(name=self.name, category=self.category).first():
     #         raise ValidationError("Classroom already exist")
     #     return super(Classroom, self).save(*args, **kwargs)
