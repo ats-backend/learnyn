@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.core.exceptions import ValidationError
 
 from school.models import Classroom
 
@@ -26,7 +25,7 @@ class SignUpForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise ValidationError(
+            raise forms.ValidationError(
                 "A user with that email already exist"
             )
         return email
@@ -46,17 +45,18 @@ class LoginForm(forms.Form):
         password = self.cleaned_data.get('password')
 
         if not email:
-            raise ValidationError(
+            raise forms.ValidationError(
                 "Email is required"
             )
 
         if not password:
-            raise ValidationError(
+            raise forms.ValidationError(
                 "Password is required"
             )
         username = email.split('@')[0]
-        if not authenticate(username=username, password=password):
-            raise ValidationError(
+        user = authenticate(username=username, password=password)
+        if not user:
+            raise forms.ValidationError(
                 "Invalid email or password, please try again"
             )
         return self.cleaned_data
@@ -80,7 +80,7 @@ class ClassAdminForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise ValidationError(
+            raise forms.ValidationError(
                 "A user with that email already exist"
             )
         return email
@@ -94,7 +94,7 @@ class PasswordForm(forms.Form):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
         if password2 != password1:
-            raise ValidationError(
+            raise forms.ValidationError(
                 "The passwords must match"
             )
         return self.cleaned_data
@@ -122,7 +122,16 @@ class StudentForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise ValidationError(
+            raise forms.ValidationError(
                 "A user with that email already exist"
             )
         return email
+
+
+# class ClassroomForm(forms.ModelForm):
+#
+#     class Meta:
+#         model = Classroom
+#         fields = (
+#             'id'
+#         )

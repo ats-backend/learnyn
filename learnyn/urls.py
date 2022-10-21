@@ -19,23 +19,25 @@ from django.contrib import admin
 from django.urls import include, path
 
 from accounts.views import (
-    AddClassAdminView,
-    AddStudentView,
-    DashboardView,
-    ClassAdminListView,
-    ClassAdminDetailView,
-    StudentListView,
+    AddClassAdminView, AddStudentView, AssignClassAdmin, HomeView,
+    ClassAdminListView, ClassAdminDetailView, StudentListView,
+    StudentDetailView, SuspendClassAdmin, UnassignClassAdmin
 )
 
 from .views import detail, profile, item_list, item_list_two, results
 
 urlpatterns = [
-    path('', DashboardView.as_view(), name='dashboard'),
+    path('', HomeView.as_view(), name='home'),
     path('class-admins', ClassAdminListView.as_view(), name='class_admins'),
     path('class-admins/<int:pk>', ClassAdminDetailView.as_view(), name='class_admin_detail'),
     path('class-admins/add', AddClassAdminView.as_view(), name='add_class_admins'),
+    path('class-admins/<int:pk>/toggle-suspend', SuspendClassAdmin.as_view(), name='suspend_class_admin'),
+    path('class-admins/<int:pk>/unassign', UnassignClassAdmin.as_view(), name='unassign_class_admin'),
+    path('class-admins/<int:pk>/assign', AssignClassAdmin.as_view(), name='assign_class_admin'),
     path('students', StudentListView.as_view(), name='students'),
+    path('students/<int:pk>', StudentDetailView.as_view(), name='student_detail'),
     path('students/add', AddStudentView.as_view(), name='add_student'),
+
     path('profile', profile, name='profile'),
     path('list', item_list, name='list'),
     path('list-two', item_list_two, name='list-two'),

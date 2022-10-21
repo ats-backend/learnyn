@@ -1,4 +1,5 @@
-from .models import Student, ClassAdmin
+from .models import Student, ClassAdmin, ResetPasswordToken
+import datetime
 
 
 def get_current_user(request):
@@ -12,4 +13,23 @@ def get_current_user(request):
     else:
         current_user = None
 
-    return dict(curent_user=current_user)
+    return dict(current_user=current_user)
+
+
+def check_class_admin(request):
+    is_class_admin = ClassAdmin.objects.filter(id=request.user.id).exists()
+
+    return dict(is_class_admin=is_class_admin)
+
+
+def delete_old_token(request):
+    context = {}
+    tokens = ResetPasswordToken.objects.all()
+    for token in tokens:
+        if token.date_created.isoformat() > (token.date_created + datetime.timedelta(minutes=5)).isoformat():
+            token.delete()
+
+    return context
+
+
+

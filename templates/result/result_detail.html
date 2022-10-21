@@ -4,9 +4,14 @@
 
     <div class="page__heading border-bottom">
         <div class="container-fluid page__container d-flex align-items-center">
+
             <h1 class="mb-0">Result</h1>
+
               {% if not results %}<a href="{% url 'results:add-result' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> Add Result</a>{% endif %}
+
               {% if results %}<a href="{% url 'results:pdf' student.id %}" class="btn btn-success ml-auto">Download Result</a>{% endif %}
+{#              {% if results %}<a href="#" class="btn btn-success ml-auto">Send Parent mail</a>{% endif %}#}
+
         </div>
     </div>
 

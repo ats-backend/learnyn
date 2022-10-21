@@ -26,9 +26,9 @@
                         <label for="custom-select" class="form-label mr-1">Classes</label>
                         <select id="custom-select" class="form-control custom-select" style="width: 200px;">
                             <option selected>All Classes</option>
-                            <option value="1">Vue.js</option>
-                            <option value="2">Node.js</option>
-                            <option value="3">GitHub</option>
+                            {% for class in classes %}
+                                <option value="{{ class.id }}">{{ class.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="form-group">
@@ -36,7 +36,7 @@
                         <select id="published01" class="form-control custom-select" style="width: 200px;">
                             <option selected>All</option>
                             <option value="1">Suspended</option>
-                            <option value="3">Unsuspended</option>
+                            <option value="0">Unsuspended</option>
                         </select>
                     </div>
                 </div>
@@ -48,23 +48,44 @@
             <div class="col-md-3">
                 <div class="card card__course">
                     <div class="card-header card-header-large card-header-dark bg-dark d-flex justify-content-center">
-                        <a class="card-header__title  justify-content-center align-self-center d-flex flex-column" href="#">
-                            <span><img src="{% static 'assets/images/logos/react.svg' %}" class="mb-1" style="width:34px;" alt="logo"></span>
+                        <a class="card-header__title  justify-content-center align-self-center d-flex flex-column" href="{% url 'class_admin_detail' class_admin.id %}">
+                            <span><i class="material-icons mb-1" style="width:50px; font-size: 50px">admin_panel_settings</i></span>
                             <span class="course__title">{{ class_admin.classroom.name }}</span>
                             <span class="course__subtitle">{{ class_admin }}</span>
                         </a>
                     </div>
                     <div class="p-3">
+
                         <div class="mb-2">
-                            <small class="text-muted">{{ class_admin.classroom.number_of_students }} students</small>
+
+                                <small class="text-muted">
+                                    {% if class_admin.classroom %}
+                                        {{ class_admin.classroom.number_of_students }} students
+                                    {% else %}
+                                        Not assigned to any class
+                                    {% endif %}
+                                </small>
                         </div>
+
                         <div class="d-flex align-items-center">
-                            <a href="" class="btn btn-primary">Unassign</a>
-                            {% if class_admin.is_suspended %}
-                                <a href="#" class="btn btn-primary ml-auto">Unsuspend</a>
+                            {% if class_admin.classroom %}
+                                <form method="post" action="{% url 'unassign_class_admin' class_admin.id %}">
+                                    {% csrf_token %}
+                                    <input type="submit" class="btn bg-dark" value="Unassign" style="color: #fff">
+                                </form>
                             {% else %}
-                                <a href="#" class="btn btn-primary ml-auto">Suspend</a>
+                                <button class="btn btn-primary" id="{{ class_admin.id }}" onclick="modalCall('{{ class_admin.id }}')">
+                                    Assign
+                                </button>
                             {% endif %}
+                            <form class="ml-auto" method="post" action="{% url 'suspend_class_admin' class_admin.id %}">
+                                {% csrf_token %}
+                                {% if class_admin.is_suspended %}
+                                    <input type="submit" class="btn btn-primary" value="Unsuspend">
+                                {% else %}
+                                    <input type="submit" class="btn btn-danger" value="Suspend">
+                                {% endif %}
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -88,4 +109,81 @@
         </div>
 
     </div>
+
+    <!-- The Modal -->
+    <div id="class_admin_modal" class="class-admin-modal">
+        <div class="class-admin-modal-dialog">
+            <!-- Modal content -->
+            <div class="class-admin-modal-content">
+                <span class="close">&times;</span>
+                <form method="post" id="assign-class">
+                    <select class="custom-select ml-2" id="id_classroom">
+                        <option value="20" selected>Select Class</option>
+                        {% for class in classes %}
+                            <option name="classroom" value="{{ class.id }}">{{ class.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="submit" class="btn btn-primary" value="Assign">
+                </form>
+            </div>
+        </div>
+
+    </div>
+
 {% endblock %}
+
+{% block scripts %}
+    <script>
+
+        let modalCall = function (btn_id) {
+            console.log(btn_id)
+            // Get the modal
+            let modal = document.getElementById("class_admin_modal");
+
+            // Get the <span> element that closes the modal
+            let span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            modal.style.display = "block";
+            var url = "{% url 'class_admins' %}"
+            url = url + `/${btn_id}/assign`
+
+            // Get the form element on the modal
+            document.getElementById('assign-class').onsubmit = function(e){
+                e.preventDefault()
+                let classroom = document.getElementById('id_classroom').value
+                console.log(classroom, btn_id)
+                let formdata = new FormData()
+                formdata.append('classroom_id', classroom)
+
+                let options = {
+                    method: 'POST',
+                    body: formdata,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    }
+                }
+                fetch(url, options)
+                    .then(async response => {
+                        const url = await response.json()
+                        window.location.pathname = url.redirect_url
+                    })
+            }
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+        }
+
+    </script>
+{% endblock %}
+
+
