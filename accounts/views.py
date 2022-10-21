@@ -42,7 +42,7 @@ class ClassroomMixin:
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['classes'] = Classroom.objects.all()
+        context['classes'] = Classroom.active_objects.all()
         return context
 
 
