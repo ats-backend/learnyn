@@ -377,6 +377,14 @@
                                         <span class="sidebar-menu-text">Class Admins</span>
                                     </a>
                                 </li>
+
+
+                                 <li class="sidebar-menu-item">
+                                    <a class="sidebar-menu-button" href="{% url 'school:session_dashboard' %}">
+                                        <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dns</i>
+                                        <span class="sidebar-menu-text">Session</span>
+                                    </a>
+                                </li>
                             {% endif %}
 
                             {% if request.user.is_superuser or is_class_admin %}
