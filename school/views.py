@@ -6,8 +6,8 @@ from django.db.models import Q
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
-from .models import Classroom, Subject
-from .forms import ClassroomForm, SubjectForm
+from .models import Classroom, Subject, Session
+from .forms import ClassroomForm, SubjectForm, SessionForm
 from accounts.models import Student, ClassAdmin
 from accounts.views import ClassroomMixin
 
@@ -205,10 +205,33 @@ class SubjectsListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, 
 
     def test_func(self):
         return bool(self.request.user.is_superuser or self.is_class_admin)
-    
+
     def get_queryset(self):
         if self.request.user.is_superuser:
             return Subject.active_objects.all()
         class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
         return class_admin.classroom.subjects.all()
-        
+
+
+class SessionListView(ListView):
+    model = Session
+    template_name = "school/session_dashboard.html"
+    queryset = Session.active_objects.all()
+    context_object_name = 'sessions'
+
+
+class SessionCreateView(View):
+    def get(self, request, *args, **kwargs):
+        print(Session.objects.all())
+        return render(request, "school/create_session.html", {"form": SessionForm()})
+
+    def post(self, request, *args, **kwargs):
+        form = SessionForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "Session Created Successfully !")
+            return HttpResponseRedirect(reverse("school:session_dashboard"))
+        errors = (form.errors.as_text()).split("*")
+        messages.error(request, errors[len(errors) - 1])
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER"))

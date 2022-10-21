@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="hero-banner bg-primary d-flex flex-row align-items-center" style="height:250px;">
+        <div class="container-fluid page__container">
+            <div class="d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="mr-3">
+                        <img src="{% static 'assets/images/logos/rails.white.svg' %}" width="100" alt="rails logo">
+                    </div>
+                    <div>
+                        <h1 class="text-white mb-0">Sessions</h1>
+                        <p class="lead text-white">List of the sessions which has occurred in the school</p>
+                        <div class="my-2 text-white d-flex">
+
+                        </div>
+                    </div>
+                </div>
+
+
+                {% if request.user.is_superuser %}
+                    <div class="mt-1">
+                        <a href="{% url 'school:create_session' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> New session</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid page__container">
+        <div class="row">
+
+            <div class="col-md-8">
+
+                <div class="">
+                    <ul class="list-group list-lessons">
+                        <li class="list-group-item d-flex">
+                            <h3>Sessions</h3>
+                        </li>
+                        {% for session in sessions %}
+                            <li class="list-group-item d-flex">
+                                <p><strong>{{forloop.counter}}. </strong>{{ session.name_of_session }}</p>
+                               
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item d-flex">
+                                <h3>No Sessions At The Moment.</h3>
+
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Subject, Classroom
+from .models import Subject, Classroom, Session
 
 
 class SubjectForm(forms.ModelForm):
@@ -31,3 +31,10 @@ class ClassroomForm(forms.ModelForm):
             #     "class": "form-control"
             # }),
         }
+
+
+class SessionForm(forms.ModelForm):
+    class Meta:
+        model = Session
+        fields = "__all__"
+

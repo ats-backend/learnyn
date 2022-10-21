@@ -26,6 +26,11 @@ class Session(models.Model):
         (second, second)
     )
     name_of_session = models.CharField(max_length=32, null=True, choices=SESSION_CHOICES, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    objects = models.Manager()
+    active_objects = ActiveManager()
+    inactive_objects = InActiveManager()
 
     def __str__(self):
         return self.name_of_session
@@ -39,6 +44,11 @@ class Term(models.Model):
     )
     session = models.ForeignKey(Session, null=True, on_delete=models.CASCADE)
     term = models.CharField(choices=TERM_CHOICES, max_length=32, null=True)
+    is_active = models.BooleanField(default=True)
+
+    objects = models.Manager()
+    active_objects = ActiveManager()
+    inactive_objects = InActiveManager()
 
     def __str__(self):
         return self.term
@@ -100,3 +110,5 @@ class Classroom(models.Model):
     @property
     def number_of_subjects_offerred(self):
         return self.subjects.all().count()
+
+
