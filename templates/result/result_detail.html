@@ -7,8 +7,6 @@
 
             <h1 class="mb-0">Result</h1>
 
-              {% if not results %}<a href="{% url 'results:add-result' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> Add Result</a>{% endif %}
-
               {% if results %}<a href="{% url 'results:pdf' student.id %}" class="btn btn-success ml-auto">Download Result</a>{% endif %}
 {#              {% if results %}<a href="#" class="btn btn-success ml-auto">Send Parent mail</a>{% endif %}#}
 
@@ -16,8 +14,24 @@
     </div>
 
     <div class="container-fluid page__container">
+        <div class="card mb-0 thead-border-top-0">
+    <div class="row ml-1">
+        <span style="font-size: 0.825rem; color: rgba(55, 77, 103, 0.54); padding: 0.35rem 1rem;"><b>Name : {{ student_result.student.first_name }}, {{ student_result.student.last_name }}</b></span>
+                        </div>
+                    <div class="row ml-1">
+                        <span style="font-size: 0.825rem; color: rgba(55, 77, 103, 0.54); padding: 0.35rem 1rem;"><b>Student ID : {{ student_result.student.student_id }}</b></span>
+                    </div>
+                    <div class="row ml-1">
+                        <span style="font-size: 0.825rem; color: rgba(55, 77, 103, 0.54); padding: 0.35rem 1rem;"><b>Session : {{ student_result.session }}</b></span>
+                    </div>
+                    <div class="row ml-1">
+                       <span style="font-size: 0.825rem; color: rgba(55, 77, 103, 0.54); padding: 0.35rem 1rem;"><b>Term : {{ student_result.term }}</b></span>
+                    </div>
+                    <div class="row ml-1">
+                        <span style="font-size: 0.825rem; color: rgba(55, 77, 103, 0.54); padding: 0.35rem 1rem;"><b>Class : {{ student_result.student.classroom }}</b></span>
+                    </div>
 
-
+        </div>
         <div class="card">
 
 
@@ -26,19 +40,17 @@
                  {% if results %}
                 <table class="table mb-0 thead-border-top-0">
                     <thead>
+
                     <tr>
-
-                        <th>Name</th>
-                        <th>{{ student.first_name }}, {{ student.last_name }}</th>
-
+                        <th>Subject</th>
+                        <th>CA1</th>
+                        <th>CA2</th>
+                        <th>Exam Score</th>
+                        <th>Total</th>
                     </tr>
-                    <tr>
-                        <th>Student ID</th>
-                        <th>{{ student.student_id }}</th>
-                    </tr>
-
                     </thead>
                     <tbody class="list" id="staff">
+
 
                     {% for result in results %}
                     <tr class="selected">
@@ -59,7 +71,23 @@
 
                         <td>
                             <div class="media align-items-center">
-                                {{ result.score }}
+                                {{ result.first_assessment_score }}
+                            </div>
+                        </td>
+                    <td>
+                            <div class="media align-items-center">
+                                {{ result.second_assessment_score }}
+                            </div>
+                        </td>
+                    <td>
+                            <div class="media align-items-center">
+                                {{ result.exam_score }}
+                            </div>
+                        </td>
+
+                    <td>
+                            <div class="media align-items-center">
+                                {{ result.result_total }}
                             </div>
                         </td>
 

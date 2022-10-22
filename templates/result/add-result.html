@@ -21,7 +21,7 @@
             {% csrf_token %}
 {#                {{ form }}#}
 {#                {{ result_form }}#}
-            {{ result_form.management_form }}
+            {{ result_forms.management_form }}
             <div class="container-fluid page__container">
                 <div class="card card-form">
                     <div class="row no-gutters">
@@ -34,20 +34,47 @@
                                         {{ form.student }}
                                     </div>
                                 </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="fname">Term</label>
+                                        {% comment %} <input type="text" class="form-control" placeholder="Name of classroom" name="name"> {% endcomment %}
+                                        {{ form.r_term }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="fname">Session</label>
+                                        {% comment %} <input type="text" class="form-control" placeholder="Name of classroom" name="name"> {% endcomment %}
+                                        {{ form.session }}
+                                    </div>
+                                </div>
+
                             </div>
-                            {% for frm in result_form %}
+                            {% for result_form in result_forms %}
                             <div class="row">
-                                <div class="form-group col-lg-6">
+                                <div class="form-group col-3">
                                     <label for="desc">Subject</label>
                                     {% comment %} <textarea id="desc" rows="4" class="form-control" placeholder="Description" name="description"></textarea> {% endcomment %}
                                     <div class="form-control-wrap">
-                                        {{ frm.subject }}
+                                        {{ result_form.subject }}
                                     </div>
                                 </div>
-                                <div class="form-group col-lg-6">
-                                    <label for="category">Score</label><br/>
+                                <div class="form-group col-3">
+                                    <label for="category">CA1</label><br/>
                                     <div class="form-control-wrap">
-                                        {{ frm.score }}
+                                        {{ result_form.first_assessment_score }}
+                                    </div>
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="category">CA2</label><br/>
+                                    <div class="form-control-wrap">
+                                        {{ result_form.second_assessment_score }}
+                                    </div>
+                                </div>
+                                <div class="form-group col-3">
+                                    <label for="category">Examination Score</label><br/>
+                                    <div class="form-control-wrap">
+                                        {{ result_form.exam_score }}
                                     </div>
                                 </div>
                             </div>
