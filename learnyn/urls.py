@@ -22,7 +22,7 @@ from accounts.views import (
     AddClassAdminView, AddStudentView, AssignClassAdmin,
     ClassAdminListView, ClassAdminDetailView, DownloadStudentDataView,
     HomeView, StudentListView, StudentDetailView, SuspendClassAdmin,
-    SuspendStudent, UnassignClassAdmin
+    SuspendStudent, UnassignClassAdmin, UploadStudentView
 )
 
 from .views import detail, profile, item_list, item_list_two, results
@@ -39,6 +39,7 @@ urlpatterns = [
     path('students/<int:pk>', StudentDetailView.as_view(), name='student_detail'),
     path('students/<int:pk>/suspend', SuspendStudent.as_view(), name='suspend_student'),
     path('students/add', AddStudentView.as_view(), name='add_student'),
+    path('students/upload', UploadStudentView.as_view(), name='upload_student'),
     path('classroom/<int:pk>/students/download', DownloadStudentDataView.as_view(), name='download_student_data'),
 
     path('profile', profile, name='profile'),

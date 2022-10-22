@@ -1,3 +1,4 @@
+import io
 import csv
 from random import randint
 
@@ -51,7 +52,6 @@ class LoginView(FormView):
     template_name = 'accounts/login.html'
 
     def form_valid(self, form):
-        print("Got called")
         email = form.cleaned_data.get('email')
         password = form.cleaned_data.get('password')
         username = email.split('@')[0]
@@ -99,7 +99,6 @@ class SetPasswordView(FormView):
         user_id = self.kwargs.get('pk')
         password = form.cleaned_data.get('password2')
         user = User.objects.filter(id=user_id).first()
-        print(password)
         user.set_password(password)
         user.save()
         return HttpResponseRedirect(
@@ -200,20 +199,15 @@ class AddStudentView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, Fo
         return self.request.user.is_superuser or self.is_class_admin
 
     def form_valid(self, form):
-        print(form.cleaned_data)
-        class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
-        if form.cleaned_data.get('classroom'):
+        if self.request.user.is_superuser:
             classroom_id = form.cleaned_data.get('classroom').id
         else:
+            class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
             classroom_id = class_admin.classroom.id
         student = Student.objects.create(
             classroom_id=classroom_id,
             **form.cleaned_data
         )
-        id2string = str(student.id).zfill(4)
-        student_id = f"LYN-STD-{id2string}"
-        student.student_id = student_id
-        student.save()
         subject = "Welcome to Learnyn, your new student account is ready"
         password_url = reverse('accounts:set-password', args=[student.id])
         action_url = str(get_current_site(self.request)) + password_url
@@ -323,7 +317,6 @@ def validate_reset_password_token(request):
 
 def new_password(request, uid):
     if request.method == "POST":
-        print("heyy")
         dec_uid = urlsafe_base64_decode(uid)
 
         try:
@@ -334,8 +327,6 @@ def new_password(request, uid):
 
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
-        print(password2)
-        print(password1)
 
         if password1 != "" and len(password1) > 6:
             if password1 == password2:
@@ -412,6 +403,19 @@ class AssignClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
         return JsonResponse({
             'redirect_url': reverse('class_admins')
         })
+
+
+class UploadStudentView(LoginRequiredMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        student_raw_file = request.FILES.get('student_file')
+        student_file = student_raw_file.read().decode('utf-8')
+        class_admin = ClassAdmin.objects.filter(id=request.user.id).first()
+        for data in csv.DictReader(io.StringIO(student_file)):
+            student = Student.objects.create(classroom=class_admin.classroom, **data)
+        return HttpResponseRedirect(
+            reverse('students')
+        )
 
 
 class DownloadStudentDataView(View):
