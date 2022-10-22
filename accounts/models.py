@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User, UserManager
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 from school.models import Classroom
 
 
 # Create your models here.
-class ActiveObject(models.Manager):
+class ActiveObject(UserManager):
 
     def get_queryset(self):
         return super().get_queryset().filter(is_suspended=False)
@@ -33,11 +33,22 @@ class Student(User):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
 @receiver(pre_save, sender=Student)
 def set_username(sender, instance, **kwargs):
     if not instance.username:
         username = instance.email.split('@')[0]
         instance.username = username
+
+
+@receiver(post_save, sender=Student)
+def set_student_id(sender, instance, created, **kwargs):
+    if created:
+        id2string = str(instance.id).zfill(4)
+        student_id = f"LYN-STD-{id2string}"
+        instance.student_id = student_id
+        instance.save()
 
 
 class ClassAdmin(User):
@@ -57,6 +68,8 @@ class ClassAdmin(User):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
 @receiver(pre_save, sender=ClassAdmin)
 def set_username(sender, instance, **kwargs):
     if not instance.username:
