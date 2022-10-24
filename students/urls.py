@@ -18,15 +18,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from accounts.views import (
-    HomeView,
+from .views import (
+    AddStudentView, StudentListView, StudentDetailView,
+    SuspendStudent, UploadStudentView
 )
 
-from .views import detail, profile, item_list, item_list_two, results
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'),
-    path('class-admins/', include('classadmins.urls')),
-    path('students/', include('students.urls')),
+    path('', StudentListView.as_view(), name='students'),
+    path('<int:pk>', StudentDetailView.as_view(), name='student_detail'),
+    path('<int:pk>/suspend', SuspendStudent.as_view(), name='suspend_student'),
+    path('add', AddStudentView.as_view(), name='add_student'),
+    path('upload', UploadStudentView.as_view(), name='upload_student'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
