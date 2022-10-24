@@ -5,8 +5,6 @@ from django.contrib.auth.forms import UserCreationForm
 
 from school.models import Classroom
 
-from .models import ClassAdmin, Student
-
 
 class SignUpForm(UserCreationForm):
     username = forms.CharField(required=False)
@@ -62,30 +60,6 @@ class LoginForm(forms.Form):
         return self.cleaned_data
 
 
-class ClassAdminForm(forms.ModelForm):
-    classroom = forms.ModelChoiceField(
-        queryset=Classroom.active_objects.all(),
-        widget=forms.Select(attrs={'class': "form-control form-control-lg"})
-    )
-
-    class Meta:
-        model = ClassAdmin
-        fields = (
-            'first_name',
-            'last_name',
-            'email',
-            'classroom'
-        )
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError(
-                "A user with that email already exist"
-            )
-        return email
-
-
 class PasswordForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(), required=True)
     password2 = forms.CharField(widget=forms.PasswordInput(), required=True)
@@ -98,40 +72,3 @@ class PasswordForm(forms.Form):
                 "The passwords must match"
             )
         return self.cleaned_data
-
-
-class StudentForm(forms.ModelForm):
-    classroom = forms.ModelChoiceField(
-        queryset=Classroom.active_objects.all(),
-        widget=forms.Select(attrs={'class': "form-control form-control-lg"}),
-        required=False
-    )
-
-    class Meta:
-        model = Student
-        fields = (
-            'first_name',
-            'last_name',
-            'email',
-            'parent_firstname',
-            'parent_lastname',
-            'parent_email',
-            'classroom'
-        )
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError(
-                "A user with that email already exist"
-            )
-        return email
-
-
-# class ClassroomForm(forms.ModelForm):
-#
-#     class Meta:
-#         model = Classroom
-#         fields = (
-#             'id'
-#         )
