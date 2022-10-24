@@ -23,8 +23,6 @@ from .api.views import HomeAPIView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
-    path('api', HomeAPIView.as_view(), name='api_home'),
-    path('accounts/api/', include('accounts.api.urls')),
     path('accounts/', include('accounts.urls')),
     path('class-admins/', include('classadmins.urls')),
     path('schools/', include('school.urls')),
@@ -32,3 +30,10 @@ urlpatterns = [
     path('students/', include('students.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += [
+    path('api', HomeAPIView.as_view(), name='api_home'),
+    path('api/accounts/', include('accounts.api.urls')),
+    path('api/class-admins/', include('classadmins.api.urls')),
+    path('api/students/', include('students.api.urls')),
+]
