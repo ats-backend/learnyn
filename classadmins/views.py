@@ -59,7 +59,7 @@ class ClassAdminDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMix
 
 class AddClassAdminView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, FormView):
     form_class = ClassAdminForm
-    template_name = 'accounts/classadmin_form.html'
+    template_name = 'classadmins/classadmin_form.html'
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -80,7 +80,7 @@ class AddClassAdminView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin,
         )
 
         return HttpResponseRedirect(
-            reverse('class_admins')
+            reverse('classadmins:class_admins')
         )
 
 
@@ -95,7 +95,7 @@ class SuspendClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
         class_admin.save()
 
         return HttpResponseRedirect(
-            reverse('class_admins')
+            reverse('classadmins:class_admins')
         )
 
 
@@ -110,7 +110,7 @@ class UnassignClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
         class_admin.save()
 
         return HttpResponseRedirect(
-            reverse('class_admins')
+            reverse('classadmins:class_admins')
         )
 
 
@@ -122,9 +122,10 @@ class AssignClassAdmin(ClassroomMixin, LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         classroom_id = request.POST.get('classroom_id')
         class_admin = ClassAdmin.objects.filter(id=pk).first()
+        class_admin = ClassAdmin.objects.filter(id=pk).first()
         class_admin.classroom_id = classroom_id
         class_admin.save()
 
         return JsonResponse({
-            'redirect_url': reverse('class_admins')
+            'redirect_url': reverse('classadmins:class_admins')
         })

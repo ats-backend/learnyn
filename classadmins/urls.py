@@ -23,12 +23,14 @@ from classadmins.views import (
     ClassAdminDetailView, SuspendClassAdmin, UnassignClassAdmin
 )
 
+app_name = 'classadmins'
+
 urlpatterns = [
     path('', ClassAdminListView.as_view(), name='class_admins'),
-    path('class-admins/<int:pk>', ClassAdminDetailView.as_view(), name='class_admin_detail'),
-    path('class-admins/add', AddClassAdminView.as_view(), name='add_class_admins'),
-    path('class-admins/<int:pk>/toggle-suspend', SuspendClassAdmin.as_view(), name='suspend_class_admin'),
-    path('class-admins/<int:pk>/unassign', UnassignClassAdmin.as_view(), name='unassign_class_admin'),
-    path('class-admins/<int:pk>/assign', AssignClassAdmin.as_view(), name='assign_class_admin'),
+    path('<int:pk>', ClassAdminDetailView.as_view(), name='class_admin_detail'),
+    path('add', AddClassAdminView.as_view(), name='add_class_admins'),
+    path('<int:pk>/toggle-suspend', SuspendClassAdmin.as_view(), name='suspend_class_admin'),
+    path('<int:pk>/unassign', UnassignClassAdmin.as_view(), name='unassign_class_admin'),
+    path('<int:pk>/assign', AssignClassAdmin.as_view(), name='assign_class_admin'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,4 +1,7 @@
-from .models import Student, ClassAdmin, ResetPasswordToken
+from .models import ResetPasswordToken
+from classadmins.models import ClassAdmin
+from students.models import Student
+
 import datetime
 
 

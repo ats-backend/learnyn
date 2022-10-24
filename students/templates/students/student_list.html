@@ -10,7 +10,7 @@
         <div class="container-fluid page__container d-flex align-items-center">
             <h1 class="mb-0">Students</h1>
             <div class="ml-auto">
-                <a href="{% url 'add_student' %}" class="btn btn-success"><i class="material-icons">add</i>Add Student</a>
+                <a href="{% url 'students:add_student' %}" class="btn btn-success"><i class="material-icons">add</i>Add Student</a>
                 <button class="btn btn-primary" onclick="modalCall()"><i class="material-icons">upload</i>Upload Students</button>
             </div>
         </div>
@@ -62,7 +62,7 @@
                     </div>
                     <div class="p-3">
                         <div class="">
-                             <form class="ml-auto" method="post" action="{% url 'suspend_student' student.id %}">
+                             <form class="ml-auto" method="post" action="{% url 'students:suspend_student' student.id %}">
                                 {% csrf_token %}
                                 {% if student.is_suspended %}
                                     <input type="submit" class="btn btn-primary" value="Unsuspend">
@@ -91,7 +91,7 @@
                         Download template
                     </a>
                 </div>
-                <form method="post" action="{% url 'upload_student' %}" id="assign-class" enctype="multipart/form-data">
+                <form method="post" action="{% url 'students:upload_student' %}" id="assign-class" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="file" name="student_file" class="form-group">
                     <input type="submit" class="form-group btn btn-primary" value="Upload">

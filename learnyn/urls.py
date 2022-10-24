@@ -26,7 +26,10 @@ from .views import detail, profile, item_list, item_list_two, results
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
+    path('accounts/', include('accounts.urls')),
     path('class-admins/', include('classadmins.urls')),
+    path('schools/', include('school.urls')),
+    path('results/', include('results.urls')),
     path('students/', include('students.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
