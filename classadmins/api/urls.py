@@ -5,7 +5,7 @@ from .views import (
     ClassAdminDetailAPIView, SuspendClassAdminAPIView, UnassignClassAdminAPIView
 )
 
-app_name = 'classadmins'
+app_name = 'classadmins_api'
 
 urlpatterns = [
     path('', ClassAdminListAPIView.as_view(), name='api_class_admins'),

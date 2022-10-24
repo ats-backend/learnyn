@@ -5,7 +5,7 @@ from .views import (
     SuspendStudentAPIVIew, UploadStudentAPIView
 )
 
-app_name = 'students'
+app_name = 'students_api'
 
 urlpatterns = [
     path('', StudentListAPIView.as_view(), name='api_students'),
