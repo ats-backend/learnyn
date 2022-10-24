@@ -155,3 +155,10 @@ REST_FRAMEWORK = {
         ],
 }
 
+
+
+# STATUS_CODES = {
+    
+#     "success": 1,
+#     "error": 0
+# }

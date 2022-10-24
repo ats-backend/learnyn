@@ -22,11 +22,7 @@ def check_superuser(request):
 class ClassRoomListView(LoginRequiredMixin, ListView):
     model = Classroom
     template_name = "school/classroom_list.html"
-    # template_name = "403.html"
     login_url = "accounts:login"
-
-    # queryset = Classroom.active_objects.all()
-    # context_object_name = "classrooms"
 
     def get_context_data(self, **kwargs):
         search = self.request.GET.get("classroom", "")
@@ -142,7 +138,7 @@ class CreateClassroomView(LoginRequiredMixin, UserPassesTestMixin, View):
             form.save()
 
             messages.success(request, f"{request.POST['name']} Created Successfully !")
-            return HttpResponseRedirect(reverse("school:classroom_list)"))
+            return HttpResponseRedirect(reverse("school:classroom_list"))
         errors = (form.errors.as_text()).split("*")
         messages.error(request, errors[len(errors) - 1])
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
@@ -220,7 +216,10 @@ class SessionListView(ListView):
     context_object_name = 'sessions'
 
 
-class SessionCreateView(View):
+class SessionCreateView(UserPassesTestMixin, View):
+    def test_func(self, request, *args, **kwargs):
+        return bool(request.user.is_superuser)
+    
     def get(self, request, *args, **kwargs):
         print(Session.objects.all())
         return render(request, "school/create_session.html", {"form": SessionForm()})
