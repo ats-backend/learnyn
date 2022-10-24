@@ -134,7 +134,7 @@ class CheckResultView(LoginRequiredMixin, View):
             print(type(user_token))
             try:
                 student_id = Token.objects.get(token=user_token)
-                # print(student_id)
+                print(student_id)
             except Token.DoesNotExist:
                 return redirect('results:check-result')
             token = Token.objects.filter(token=user_token)
@@ -190,17 +190,17 @@ class UploadResultView(LoginRequiredMixin, View):
                     'term': result.term,
                     'session': result.session
                 })
-                # user_token = Token.objects.create(student=result.student)
-                # subject = "Result"
-                # send_mail(student, subject, user_token=user_token.token)
+                user_token = Token.objects.create(student=result.student)
+                subject = "Result"
+                send_mail(student, subject, user_token=user_token.token)
             else:
                 Result.objects.create(student=current_student_id['student'], term=current_student_id['term'],
                                       session=current_student_id['session'], subject=subject,
                                       first_assessment_score=first_assessment_score,
                                       second_assessment_score=second_assessment_score, exam_score=exam_score)
-                # user_token = Token.objects.create(student=result.student)
-                # subject = "Result"
-                # send_mail(student, subject, user_token=user_token.token)
+                user_token = Token.objects.create(student=result.student)
+                subject = "Result"
+                send_mail(student, subject, user_token=user_token.token)
 
         return HttpResponseRedirect(
             reverse('results:result')
