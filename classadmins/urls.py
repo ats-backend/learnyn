@@ -18,7 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from classadmins.views import (
+from .views import (
     AddClassAdminView, AssignClassAdmin, ClassAdminListView,
     ClassAdminDetailView, SuspendClassAdmin, UnassignClassAdmin
 )

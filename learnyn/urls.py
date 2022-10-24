@@ -18,11 +18,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from accounts.views import (
-    HomeView,
-)
-
-from .views import detail, profile, item_list, item_list_two, results
+from .views import HomeView
+from .api.views import HomeAPIView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
@@ -35,3 +32,10 @@ urlpatterns = [
     path("api/school/", include("school.api.urls"))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += [
+    path('api', HomeAPIView.as_view(), name='api_home'),
+    path('api/accounts/', include('accounts.api.urls')),
+    path('api/class-admins/', include('classadmins.api.urls')),
+    path('api/students/', include('students.api.urls')),
+]

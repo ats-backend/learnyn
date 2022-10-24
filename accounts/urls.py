@@ -18,3 +18,7 @@ urlpatterns = [
     path("<str:uid>/new-password/", new_password, name="new_password"),
 
 ]
+
+# urlpatterns += [
+#     path('api'/)
+# ]
