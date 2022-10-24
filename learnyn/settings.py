@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "school",
     'students',
     'results',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,12 @@ EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = '2525'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ],
+}
+
