@@ -6,11 +6,11 @@
         <div class="container-fluid page__container d-flex align-items-center">
 
             <h1 class="mb-0">Result</h1>
-
-              {% if results %}<a href="{% url 'results:pdf' student.id %}" class="btn btn-success ml-auto">Download Result</a>{% endif %}
-              {% if request.user.is_superuser or is_class_admin %}<a href="{% url 'results:send-to-parent' student.id %}" class="btn btn-success ml-auto">Send to Parent</a>{% endif %}
+            <div class="ml-auto">
+              {% if results %}<a href="{% url 'results:pdf' student.id %}" class="btn btn-success">Download Result</a>{% endif %}
+              {% if request.user.is_superuser or is_class_admin %}<a href="{% url 'results:send-to-parent' student.id %}" class="btn btn-success">Send to Parent</a>{% endif %}
 {#              {% if results %}<a href="#" class="btn btn-success ml-auto">Send Parent mail</a>{% endif %}#}
-
+</div>
         </div>
     </div>
 
