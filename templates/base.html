@@ -225,7 +225,7 @@
                             {% endif %}
                             {% if request.user.is_superuser %}
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href="{% url 'class_admins' %}">
+                                    <a class="sidebar-menu-button" href="{% url 'classadmins:class_admins' %}">
                                         <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">shopping_cart</i>
                                         <span class="sidebar-menu-text">Class Admins</span>
                                     </a>
@@ -249,7 +249,7 @@
                                 </li>
 
                                 <li class="sidebar-menu-item">
-                                    <a class="sidebar-menu-button" href="{% url 'students' %}">
+                                    <a class="sidebar-menu-button" href="{% url 'students:students' %}">
                                         <i class="sidebar-menu-icon sidebar-menu-icon--left material-icons">dns</i>
                                         <span class="sidebar-menu-text">Students</span>
                                     </a>

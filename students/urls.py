@@ -23,6 +23,7 @@ from .views import (
     SuspendStudent, UploadStudentView
 )
 
+app_name = 'students'
 
 urlpatterns = [
     path('', StudentListView.as_view(), name='students'),

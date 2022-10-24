@@ -18,15 +18,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from accounts.views import (
-    HomeView,
-)
-
-from .views import detail, profile, item_list, item_list_two, results
+from .views import HomeView
+from .api.views import HomeAPIView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
+    path('api', HomeAPIView.as_view(), name='api_home'),
+    path('accounts/api/', include('accounts.api.urls')),
+    path('accounts/', include('accounts.urls')),
     path('class-admins/', include('classadmins.urls')),
+    path('schools/', include('school.urls')),
+    path('results/', include('results.urls')),
     path('students/', include('students.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

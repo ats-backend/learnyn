@@ -9,7 +9,7 @@
     <div class="page__heading border-bottom">
         <div class="container-fluid page__container d-flex align-items-center">
             <h1 class="mb-0">Class Admins</h1>
-            <a href="{% url 'add_class_admins' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> Add Class Admin</a>
+            <a href="{% url 'classadmins:add_class_admins' %}" class="btn btn-success ml-auto"><i class="material-icons">add</i> Add Class Admin</a>
         </div>
     </div>
 
@@ -48,7 +48,7 @@
             <div class="col-md-3">
                 <div class="card card__course">
                     <div class="card-header card-header-large card-header-dark bg-dark d-flex justify-content-center">
-                        <a class="card-header__title  justify-content-center align-self-center d-flex flex-column" href="{% url 'class_admin_detail' class_admin.id %}">
+                        <a class="card-header__title  justify-content-center align-self-center d-flex flex-column" href="{% url 'classadmins:class_admin_detail' class_admin.id %}">
                             <span><i class="material-icons mb-1" style="width:50px; font-size: 50px">admin_panel_settings</i></span>
                             <span class="course__title">{{ class_admin.classroom.name }}</span>
                             <span class="course__subtitle">{{ class_admin }}</span>
@@ -69,7 +69,7 @@
 
                         <div class="d-flex align-items-center">
                             {% if class_admin.classroom %}
-                                <form method="post" action="{% url 'unassign_class_admin' class_admin.id %}">
+                                <form method="post" action="{% url 'classadmins:unassign_class_admin' class_admin.id %}">
                                     {% csrf_token %}
                                     <input type="submit" class="btn bg-dark" value="Unassign" style="color: #fff">
                                 </form>
@@ -78,7 +78,7 @@
                                     Assign
                                 </button>
                             {% endif %}
-                            <form class="ml-auto" method="post" action="{% url 'suspend_class_admin' class_admin.id %}">
+                            <form class="ml-auto" method="post" action="{% url 'classadmins:suspend_class_admin' class_admin.id %}">
                                 {% csrf_token %}
                                 {% if class_admin.is_suspended %}
                                     <input type="submit" class="btn btn-primary" value="Unsuspend">
@@ -130,8 +130,8 @@
 
             // When the user clicks the button, open the modal
             modal.style.display = "block";
-            var url = "{% url 'class_admins' %}"
-            url = url + `/${btn_id}/assign`
+            var url = "{% url 'classadmins:class_admins' %}"
+            url = url + `${btn_id}/assign`
 
             // Get the form element on the modal
             document.getElementById('assign-class').onsubmit = function(e){

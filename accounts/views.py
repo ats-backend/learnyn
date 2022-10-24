@@ -112,20 +112,6 @@ class ProfileView(DetailView):
     model = User
 
 
-class HomeView(LoginRequiredMixin, View):
-
-    def get(self, request, *args, **kwargs):
-        classrooms = Classroom.active_objects.count()
-        class_admins = ClassAdmin.active_objects.count()
-        students = Student.active_objects.count()
-        context = {
-            'all_students': students,
-            'all_class_admins': class_admins,
-            'all_classrooms': classrooms,
-        }
-        return render(request, 'index.html', context)
-
-
 class ResetPasswordView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'accounts/reset_password.html')

@@ -24,7 +24,7 @@ from school.models import Classroom
 
 class AddStudentView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, FormView):
     form_class = StudentForm
-    template_name = 'accounts/add_student_form.html'
+    template_name = 'students/add_student_form.html'
 
     def test_func(self):
         return self.request.user.is_superuser or self.is_class_admin
@@ -49,13 +49,13 @@ class AddStudentView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, Fo
         )
 
         return HttpResponseRedirect(
-            reverse('students')
+            reverse('students:students')
         )
 
 
 class StudentListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Student
-    template_name = 'accounts/student_list.html'
+    template_name = 'students/student_list.html'
     paginate_by = 12
 
     def test_func(self):
@@ -130,7 +130,7 @@ class StudentListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, L
 
 class StudentDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = Student
-    template_name = 'accounts/student_detail.html'
+    template_name = 'students/student_detail.html'
 
     def test_func(self):
         return self.request.user.is_superuser or self.is_class_admin or self.is_student
@@ -153,7 +153,7 @@ class UploadStudentView(LoginRequiredMixin, View):
                 action_url=action_url
             )
         return HttpResponseRedirect(
-            reverse('students')
+            reverse('students:students')
         )
 
 
@@ -168,7 +168,7 @@ class SuspendStudent(ClassroomMixin, LoginRequiredMixin, View):
         student.save()
 
         return HttpResponseRedirect(
-            reverse('students')
+            reverse('students:students')
         )
 
 
