@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import BaseFormSet
 
-from accounts.models import ClassAdmin
+from classadmins.models import ClassAdmin
 from results.models import Token, Result
 from school.models import Subject
 
