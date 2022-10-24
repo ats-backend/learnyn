@@ -5,7 +5,7 @@ from .views import (
     SetPasswordAPIView, SignupAPIView
 )
 
-app_name = 'accounts'
+app_name = 'accounts_api'
 
 urlpatterns = [
     path('login/', LoginAPIView.as_view(), name='api_login'),
