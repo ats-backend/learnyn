@@ -1,3 +1,6 @@
+import csv
+import io
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
@@ -44,7 +47,7 @@ class AddStudentResultView(LoginRequiredMixin, View):
             print(r_session, type(r_session))
             try:
                 term = Term.objects.get_or_create(session=r_session, term=r_term)
-                get_term = Term.objects.get(session=r_session)
+                get_term = Term.objects.get(term=term[0])
                 print(get_term.id)
             except IntegrityError:
                 return redirect('results:add-result')
@@ -83,7 +86,7 @@ class ResultView(LoginRequiredMixin, View):
         elif ClassAdmin.objects.filter(id=request.user.id).exists():
             results = Result.objects.filter(student__classroom__teacher=request.user).values_list('student', flat=True)
             print(results)
-            students = Student.objects.filter(id__in=results)
+            students = Student.objects.filter(id__in=results).exclude(is_suspended=True)
         else:
             messages.info(self.request, "You need to obtain token to access this page.")
             return redirect('results:check-result')
@@ -154,3 +157,44 @@ class GeneratePdf(LoginRequiredMixin, View):
         }
         pdf = render_to_pdf('../templates/result/pdf/student_result.html', data)
         return HttpResponse(pdf, content_type='application/pdf')
+
+
+class UploadResultView(LoginRequiredMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        result_raw_file = request.FILES.get('result_file')
+        print(result_raw_file, type(result_raw_file))
+        if result_raw_file:
+            result_file = result_raw_file.read().decode('utf-8')
+            print(result_file)
+        else:
+            return redirect('results:result')
+        current_student_id = {}
+        for data in csv.DictReader(io.StringIO(result_file)):
+            print(data)
+            student = Student.objects.filter(student_id=data['student_id']).first()
+            session = Session.objects.filter(name_of_session=data['session']).first()
+            subject = Subject.objects.filter(name__icontains=data['subject']).first()
+            term = Term.objects.get_or_create(session=session, term=data['term'])
+            get_term = Term.objects.get(term=term[0])
+            first_assessment_score = data['first_assessment_score']
+            second_assessment_score = data['second_assessment_score']
+            exam_score = data['exam_score']
+            if student:
+                result = Result.objects.create(student=student, term=get_term, session=session, subject=subject,
+                                               first_assessment_score=first_assessment_score,
+                                               second_assessment_score=second_assessment_score, exam_score=exam_score)
+                current_student_id.update({
+                    'student': result.student,
+                    'term': result.term,
+                    'session': result.session
+                })
+            else:
+                Result.objects.create(student=current_student_id['student'], term=current_student_id['term'],
+                                      session=current_student_id['session'], subject=subject,
+                                      first_assessment_score=first_assessment_score,
+                                      second_assessment_score=second_assessment_score, exam_score=exam_score)
+
+        return HttpResponseRedirect(
+            reverse('results:result')
+        )

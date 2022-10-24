@@ -16,8 +16,8 @@ class Result(models.Model):
     first_assessment_score = models.IntegerField(null=True, blank=True)
     second_assessment_score = models.IntegerField(null=True, blank=True)
 
-    class Meta:
-        unique_together = ('student', 'subject')
+    # class Meta:
+    #     unique_together = ('student', 'subject')
 
     def __str__(self):
         return self.student.student_id
