@@ -21,7 +21,7 @@ def send_mail(receiver, subject, action_url):
                   f"You can set your password here: {action_url}"
     else:
         message = f"Hi {receiver.firstname}, \n" \
-                  f"We are happy to you your child's result. Kindly visit the link below to download it." \
+                  f"We are happy to send you your child's result. Kindly visit the link below to download it." \
                   f"{action_url}"
     mail = EmailMessage(subject, message, to=[receiver.email], from_email='noreply@learnyn.com')
 
