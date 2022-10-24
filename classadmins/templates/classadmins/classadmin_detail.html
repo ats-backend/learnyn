@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="hero-banner bg-primary d-flex flex-row align-items-center" style="height:250px;">
+        <div class="container-fluid page__container">
+            <div class="d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <div>
+                        <h2 class="text-white">{{ classadmin }}</h2>
+                        <div class="my-2 text-white d-flex">
+                            <p class="text-white">Class admin for {{ classadmin.classroom }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <div class="mt-1">
+                        <a href="{% url 'add_student' %}" class="btn btn-success ml-auto">Add student</a>
+                    </div>
+                    <div class="mt-1 ml-3">
+                        <a href="{% url 'download_student_data' classadmin.classroom.id %}" class="btn btn-success ml-auto">Download all students data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid page__container">
+        <div class="row">
+            <div class="col-md-8">
+
+
+                <div class="">
+                    <ul class="list-group list-lessons">
+                        <li class="list-group-item d-flex">
+                            <h4>Students</h4>
+                        </li>
+                        {% for student in classadmin.classroom.students.all %}
+                            <li class="list-group-item d-flex">
+                                <div>
+                                    <a href="{% url 'student_detail' student.id %}" class="text"><strong>{{forloop.counter}}. </strong>{{ student }}</a>
+                                </div>
+                                {% if request.user.is_superuser %}
+                                    <div class="ml-auto d-flex align-items-center">
+                                    {% if student.is_suspended %}
+                                        <a href="" ><span class="badge badge-success mr-2">Unsuspend</span></a>
+                                    {% else %}
+                                        <a href="" ><span class="badge badge-danger mr-2">Suspend</span></a>
+                                    {% endif %}
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item d-flex">
+                                <p>No students for this class admin</p>
+
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

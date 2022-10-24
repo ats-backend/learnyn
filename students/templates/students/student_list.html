@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    <title>Students - Learnyn</title>
+{% endblock %}
+
+{% block content %}
+
+    <div class="page__heading border-bottom">
+        <div class="container-fluid page__container d-flex align-items-center">
+            <h1 class="mb-0">Students</h1>
+            <div class="ml-auto">
+                <a href="{% url 'students:add_student' %}" class="btn btn-success"><i class="material-icons">add</i>Add Student</a>
+                <button class="btn btn-primary" onclick="modalCall()"><i class="material-icons">upload</i>Upload Students</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid page__container">
+        <form method="get" class="mb-3 border-bottom pb-3">
+            <div class="d-flex">
+                <div class="search-form mr-3 search-form--light">
+                    <input type="text" name="query" value="{{ request.GET.query }}" class="form-control" placeholder="Search class admins" id="searchSample02">
+                    <button class="btn" type="submit"><i class="material-icons">search</i></button>
+                </div>
+
+                <div class="form-inline ml-auto">
+                    {% if request.user.is_superuser %}
+                    <div class="form-group mr-3">
+                        <label for="custom-select" class="form-label mr-1">Classes</label>
+                        <select name="classroom" id="select-class" class="form-control custom-select" onchange="this.form.submit()" style="width: 200px;">
+                            <option selected disabled>All Classes</option>
+                            {% for class in classes %}
+                                <option value="{{ class.id }}">{{ class.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="published01" class="form-label mr-1">Status</label>
+                        <select id="select-status" name="is_suspended" class="form-control custom-select" onchange="this.form.submit()" style="width: 200px;">
+                            <option selected disabled >All</option>
+                            <option value="1">Suspended</option>
+                            <option value="0">Unsuspended</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            {% for student in student_list %}
+            <div class="col-md-3">
+                <div class="card card__course">
+                    <div class="card-header card-header-large card-header-dark bg-dark d-flex justify-content-center">
+                        <a class="card-header__title  justify-content-center align-self-center d-flex flex-column" href="#">
+                            <span><i class="material-icons mb-1" style="width:50px; font-size: 50px">person</i></span>
+                            <span class="course__title">{{ student.classroom.name }}</span>
+                            <span class="course__subtitle mb-2">{{ student }}</span>
+                            <span><small>{{ student.student_id }}</small></span>
+                        </a>
+                    </div>
+                    <div class="p-3">
+                        <div class="">
+                             <form class="ml-auto" method="post" action="{% url 'students:suspend_student' student.id %}">
+                                {% csrf_token %}
+                                {% if student.is_suspended %}
+                                    <input type="submit" class="btn btn-primary" value="Unsuspend">
+                                {% else %}
+                                    <input type="submit" class="btn btn-danger" value="Suspend">
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <!-- The Modal -->
+    <div id="class_admin_modal" class="class-admin-modal">
+        <div class="class-admin-modal-dialog">
+            <!-- Modal content -->
+            <div class="class-admin-modal-content">
+                <span class="close">&times;</span>
+                <h6 class="mt-4 mb-2"><strong>Upload students from a csv file</strong></h6>
+                <div class="mt-1 mb-4">
+                    <a href="{% static 'students_data/students_list.csv' %}" download>
+                        Download template
+                    </a>
+                </div>
+                <form method="post" action="{% url 'students:upload_student' %}" id="assign-class" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="student_file" class="form-group">
+                    <input type="submit" class="form-group btn btn-primary" value="Upload">
+                </form>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        let modalCall = function() {
+            // Get the modal
+            let modal = document.getElementById("class_admin_modal");
+
+            // Get the <span> element that closes the modal
+            let span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            modal.style.display = "block";
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+        }
+
+    </script>
+{% endblock %}
