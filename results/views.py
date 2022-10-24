@@ -3,6 +3,7 @@ import io
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.sites.shortcuts import get_current_site
 from django.db import IntegrityError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -63,7 +64,7 @@ class AddStudentResultView(LoginRequiredMixin, View):
                     )
                 user_token = Token.objects.create(student=student)
                 subject = "Result"
-                send_mail(student, subject, user_token.token)
+                send_mail(student, subject, user_token=user_token.token)
                 return HttpResponseRedirect(
                     reverse('results:result_detail', args=[student.id])
                 )
@@ -144,7 +145,7 @@ class CheckResultView(LoginRequiredMixin, View):
             return redirect('results:check-result')
 
 
-class GeneratePdf(LoginRequiredMixin, View):
+class GeneratePdf(View):
 
     def get(self, request, pk):
         student = Student.objects.get(pk=pk)
@@ -198,3 +199,26 @@ class UploadResultView(LoginRequiredMixin, View):
         return HttpResponseRedirect(
             reverse('results:result')
         )
+
+
+class SendResult(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        student = Student.objects.get(id=pk)
+        results = Result.objects.filter(student=student)
+        student_result = Result.objects.filter(student=student).first()
+        # data = {
+        #     'student': student,
+        #     'results': results,
+        #     'student_result': student_result,
+        # }
+        # pdf = render_to_pdf('../templates/result/pdf/student_result.html', data)
+        # print(pdf)
+        # content = open(pdf, 'rb').read()
+        # attachment = ('Result', content, 'application/pdf')
+        generate_result = reverse('results:pdf', args=[pk])
+        pdf_url = str(get_current_site(request)) + generate_result
+        subject = f'Download Result'
+        send_mail(student, subject, attachment_url=pdf_url)
+
+        return redirect(request.META.get('HTTP_REFERER'))
+
