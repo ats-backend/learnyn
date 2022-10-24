@@ -190,11 +190,17 @@ class UploadResultView(LoginRequiredMixin, View):
                     'term': result.term,
                     'session': result.session
                 })
+                user_token = Token.objects.create(student=result.student)
+                subject = "Result"
+                send_mail(student, subject, user_token=user_token.token)
             else:
                 Result.objects.create(student=current_student_id['student'], term=current_student_id['term'],
                                       session=current_student_id['session'], subject=subject,
                                       first_assessment_score=first_assessment_score,
                                       second_assessment_score=second_assessment_score, exam_score=exam_score)
+                user_token = Token.objects.create(student=result.student)
+                subject = "Result"
+                send_mail(student, subject, user_token=user_token.token)
 
         return HttpResponseRedirect(
             reverse('results:result')
