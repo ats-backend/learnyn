@@ -10,7 +10,8 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.views.generic import View
 
-from accounts.models import Student, ClassAdmin
+from classadmins.models import ClassAdmin
+from students.models import Student
 from results.forms import TokenForm, StudentResultForm, ResultFormset, ResultForm
 from results.models import Result, Token
 from results.utils import render_to_pdf, send_mail
@@ -227,4 +228,3 @@ class SendResult(LoginRequiredMixin, View):
         send_mail(student, subject, attachment_url=pdf_url)
 
         return redirect(request.META.get('HTTP_REFERER'))
-

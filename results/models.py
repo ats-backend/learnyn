@@ -3,7 +3,7 @@ import uuid
 from django.db import models
 
 # Create your models here.
-from accounts.models import Student
+from students.models import Student
 from school.models import Subject, Term, Session
 
 
