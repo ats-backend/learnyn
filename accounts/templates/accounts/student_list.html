@@ -25,6 +25,7 @@
                 </div>
 
                 <div class="form-inline ml-auto">
+                    {% if request.user.is_superuser %}
                     <div class="form-group mr-3">
                         <label for="custom-select" class="form-label mr-1">Classes</label>
                         <select name="classroom" id="select-class" class="form-control custom-select" onchange="this.form.submit()" style="width: 200px;">
@@ -34,6 +35,7 @@
                             {% endfor %}
                         </select>
                     </div>
+                    {% endif %}
                     <div class="form-group">
                         <label for="published01" class="form-label mr-1">Status</label>
                         <select id="select-status" name="is_suspended" class="form-control custom-select" onchange="this.form.submit()" style="width: 200px;">

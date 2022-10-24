@@ -6,15 +6,15 @@
         <div class="container-fluid page__container d-flex align-items-center">
             <h1 class="mb-0">Results</h1>
             <div class="ml-auto">
-                <a href="#" class="btn btn-success">Upload Results</a>
                 <a href="{% url 'results:add-result' %}" class="btn btn-success"><i class="material-icons">add</i> Add Result</a>
+                <button class="btn btn-primary" onclick="modalCall()"><i class="material-icons">upload</i> Upload Results</button>
             </div>
         </div>
     </div>
 
     <div class="container-fluid page__container">
 
-
+        {% if students %}
         <div class="card">
             <div class="card-header card-header-large bg-white">
                 <h4 class="card-header__title">All Student Results</h4>
@@ -60,7 +60,7 @@
                             </div>
                         </td>
 
-                        <td>{{ student.classroom.number_of_subjects_offerred }}</td>
+                        <td>{{ student.result_set.count }}</td>
 
                     </tr>
                     {% endfor %}
@@ -72,7 +72,30 @@
 
 
         </div>
+    {% else %}
+    <p>No result yet</p>
+    {% endif %}
     </div>
+
+
+    <!-- The Modal -->
+    <div id="class_admin_modal" class="class-admin-modal">
+        <div class="class-admin-modal-dialog">
+            <!-- Modal content -->
+            <div class="class-admin-modal-content">
+                <span class="close">&times;</span>
+                <h6 class="mt-4 mb-2"><strong>Upload results from a csv file</strong></h6>
+
+                <form method="post" action="{% url 'results:upload-result' %}" id="assign-class" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="result_file" class="form-group">
+                    <input type="submit" class="form-group btn btn-primary" value="Upload">
+                </form>
+            </div>
+        </div>
+
+    </div>
+
 
 {% endblock %}
 
@@ -82,5 +105,33 @@
     <script src="{% static 'assets/vendor/jqvmap/jquery.vmap.min.js' %}"></script>
     <script src="{% static 'assets/vendor/jqvmap/maps/jquery.vmap.world.js' %}"></script>
     <script src="{% static 'assets/js/vector-maps.js' %}"></script>
+
+     <script>
+
+        let modalCall = function() {
+            // Get the modal
+            let modal = document.getElementById("class_admin_modal");
+
+            // Get the <span> element that closes the modal
+            let span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            modal.style.display = "block";
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+        }
+
+    </script>
 
 {% endblock %}

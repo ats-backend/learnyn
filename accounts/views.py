@@ -232,31 +232,69 @@ class StudentListView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, L
 
     def get_queryset(self):
         if self.request.user.is_superuser:
+            if self.request.GET.get('query'):
+                search_query = self.request.GET.get('query')
+                return Student.objects.filter(
+                    Q(first_name__icontains=search_query) |
+                    Q(last_name__icontains=search_query) |
+                    Q(classroom__name__icontains=search_query)
+                )
+            elif self.request.GET.get('classroom'):
+                classroom_id = self.request.GET.get('classroom')
+                return Student.objects.filter(
+                    classroom_id=classroom_id
+                )
+
+            elif self.request.GET.get('is_suspended'):
+                is_suspended = self.request.GET.get('is_suspended')
+                return Student.objects.filter(
+                    is_suspended=is_suspended
+                )
             return Student.objects.all()
 
         class_admin = ClassAdmin.objects.filter(id=self.request.user.id).first()
-        return class_admin.classroom.students.all()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
         if self.request.GET.get('query'):
             search_query = self.request.GET.get('query')
-            context['student_list'] = Student.objects.filter(
+            return class_admin.classroom.students(manager='objects').filter(
                 Q(first_name__icontains=search_query) |
                 Q(last_name__icontains=search_query) |
                 Q(classroom__name__icontains=search_query)
             )
-        if self.request.GET.get('classroom'):
+
+        elif self.request.GET.get('classroom'):
             classroom_id = self.request.GET.get('classroom')
-            context['student_list'] = Student.objects.filter(
+            return class_admin.classroom.students(manager='objects').filter(
                 classroom_id=classroom_id
             )
-        if self.request.GET.get('is_suspended'):
+
+        elif self.request.GET.get('is_suspended'):
             is_suspended = self.request.GET.get('is_suspended')
-            context['student_list'] = Student.objects.filter(
+            return class_admin.classroom.students(manager='objects').filter(
                 is_suspended=is_suspended
             )
-        return context
+        return class_admin.classroom.students.all()
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data()
+    #     if self.request.GET.get('query'):
+    #         search_query = self.request.GET.get('query')
+    #         context['student_list'] = Student.objects.filter(
+    #             Q(first_name__icontains=search_query) |
+    #             Q(last_name__icontains=search_query) |
+    #             Q(classroom__name__icontains=search_query)
+    #         )
+    #     if self.request.GET.get('classroom'):
+    #         classroom_id = self.request.GET.get('classroom')
+    #         context['student_list'] = Student.objects.filter(
+    #             classroom_id=classroom_id
+    #         )
+    #     if self.request.GET.get('is_suspended'):
+    #         is_suspended = self.request.GET.get('is_suspended')
+    #         context['student_list'] = Student.objects.filter(
+    #             is_suspended=is_suspended
+    #         )
+    #     return context
 
 
 class StudentDetailView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin, DetailView):
@@ -413,6 +451,14 @@ class UploadStudentView(LoginRequiredMixin, View):
         class_admin = ClassAdmin.objects.filter(id=request.user.id).first()
         for data in csv.DictReader(io.StringIO(student_file)):
             student = Student.objects.create(classroom=class_admin.classroom, **data)
+            subject = "Welcome to Learnyn, your new student account is ready"
+            password_url = reverse('accounts:set-password', args=[student.id])
+            action_url = str(get_current_site(self.request)) + password_url
+            send_mail(
+                receiver=student,
+                subject=subject,
+                action_url=action_url
+            )
         return HttpResponseRedirect(
             reverse('students')
         )
