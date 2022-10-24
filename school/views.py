@@ -142,7 +142,7 @@ class CreateClassroomView(LoginRequiredMixin, UserPassesTestMixin, View):
             form.save()
 
             messages.success(request, f"{request.POST['name']} Created Successfully !")
-            return HttpResponseRedirect(reverse("school:create_classroom"))
+            return HttpResponseRedirect(reverse("school:classroom_list)"))
         errors = (form.errors.as_text()).split("*")
         messages.error(request, errors[len(errors) - 1])
         return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
