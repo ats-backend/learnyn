@@ -8,9 +8,9 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Classroom, Subject, Session
 from .forms import ClassroomForm, SubjectForm, SessionForm
-from accounts.models import Student, ClassAdmin
 from accounts.views import ClassroomMixin
-
+from students.models import Student
+from classadmins.models import ClassAdmin
 
 # Create your views here.
 
