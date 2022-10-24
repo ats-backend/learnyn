@@ -16,7 +16,7 @@ def send_mail(receiver, subject, action_url):
         message = f"Hi {receiver.first_name}, \n" \
                   f"The details to access your school account are:\n" \
                   f"email: {receiver.email}\n" \
-                  f"student id: {receiver.student.id}\n" \
+                  f"student id: {receiver.student_id}\n" \
                   f"Class: {receiver.classroom}\n" \
                   f"You can set your password here: {action_url}"
     else:
