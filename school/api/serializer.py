@@ -26,7 +26,7 @@ class ClassroomSerializer(ModelSerializer):
     
     class Meta:
         model = Classroom
-        fields = ("name", "category", "subject", "description", "url")
+        fields = ("name", "category", "subject", "description", 'url')
         
         
 class ClassroomDetailSerializer(ModelSerializer):
