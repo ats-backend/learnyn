@@ -10,7 +10,10 @@ from classadmins.models import ClassAdmin
 class ClassAdminListAPIView(ListCreateAPIView):
     queryset = ClassAdmin.active_objects.all()
     serializer_class = ClassAdminSerializer
-    permission_classes = [IsSchoolAdmin]
+    permission_classes = [IsAuthenticated, IsSchoolAdmin]
+
+    def post(self, request, *args, **kwargs):
+        pass
 
 
 class ClassAdminDetailAPIView(APIView):

@@ -25,11 +25,16 @@ class ClassAdminSerializer(serializers.ModelSerializer):
             'classroom'
         )
 
-    def validate_email(self):
-        email = self.validated_data.get('email')
-        if User.objects.filter(email=email).exists():
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
             raise serializers.ValidationError(
                 "A user with that email already exist"
             )
-        return email
+        return value
 
+    def validate_classroom(self, value):
+        if ClassAdmin.objects.filter(classroom_id=value).exists():
+            raise serializers.ValidationError(
+                "That class already has a teacher"
+            )
+        return value
