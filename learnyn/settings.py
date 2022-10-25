@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+from datetime import timedelta
+
 from dotenv import load_dotenv
 import os
 from pathlib import Path
@@ -155,3 +157,13 @@ REST_FRAMEWORK = {
         ],
 }
 
+# STATUS_CODES = {
+
+#     "success": 1,
+#     "error": 0
+# }
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}

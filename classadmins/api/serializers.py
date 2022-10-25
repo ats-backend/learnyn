@@ -7,6 +7,13 @@ from school.models import Classroom
 
 
 class ClassAdminSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+    classroom = serializers.PrimaryKeyRelatedField(
+        required=True,
+        queryset=Classroom.active_objects.all()
+    )
     # classroom = serializers
 
     class Meta:
