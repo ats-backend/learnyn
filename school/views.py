@@ -217,8 +217,8 @@ class SessionListView(ListView):
 
 
 class SessionCreateView(UserPassesTestMixin, View):
-    def test_func(self, request, *args, **kwargs):
-        return bool(request.user.is_superuser)
+    def test_func(self):
+        return bool(self.request.user.is_superuser)
     
     def get(self, request, *args, **kwargs):
         print(Session.objects.all())
