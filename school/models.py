@@ -83,7 +83,7 @@ class Classroom(models.Model):
     name = models.CharField(max_length=50, null=True)
     category = models.CharField(max_length=50, null=True, choices=CATEGORY_CHOICES)
     subjects = models.ManyToManyField(Subject, limit_choices_to={'is_active': True}, )
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 

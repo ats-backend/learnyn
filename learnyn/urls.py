@@ -37,4 +37,5 @@ urlpatterns += [
     path('api/accounts/', include('accounts.api.urls')),
     path('api/class-admins/', include('classadmins.api.urls')),
     path('api/students/', include('students.api.urls')),
+    path("api/school/", include("school.api.urls"))
 ]
