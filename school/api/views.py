@@ -16,24 +16,26 @@ from school.models import Session, Term, Subject, Classroom
 class ListCreateSessionAPIView(ListCreateAPIView):
     serializer_class = SessionSerializer
     queryset = Session.active_objects.all()
+    permission_classes = (IsSuperUserOrReadOnly,)
     
     
 class ListCreateTermAPIView(ListCreateAPIView):
     serializer_class = TermSerializer
     queryset = Term.active_objects.all()
+    permission_classes = (IsSuperUserOrReadOnly,)
     
     
 class ListCreateSubjectAPIView(ListCreateAPIView):
     serializer_class = SubjectSerializer
     queryset = Subject.active_objects.all()
-    permission_classes = (IsSuperUser, )
+    permission_classes = (IsSuperUserOrReadOnly, )
     
     
     
 class DetailsUpdateDestroySubjectAPIView(ListCreateAPIView):
     queryset = Subject.active_objects.all()
     serializer_class = SubjectSerializer
-    permission_classes = (IsSuperUserorReadOnly, )
+    permission_classes = (IsSuperUserOrReadOnly, )
     
     
     def delete(self, request, *args, **kwargs):

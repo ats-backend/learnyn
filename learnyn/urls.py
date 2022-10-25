@@ -28,8 +28,6 @@ urlpatterns = [
     path('schools/', include('school.urls')),
     path('results/', include('results.urls')),
     path('students/', include('students.urls')),
-    
-    path("api/school/", include("school.api.urls"))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
@@ -38,4 +36,5 @@ urlpatterns += [
     path('api/accounts/', include('accounts.api.urls')),
     path('api/class-admins/', include('classadmins.api.urls')),
     path('api/students/', include('students.api.urls')),
+    path("api/school/", include("school.api.urls"))
 ]
