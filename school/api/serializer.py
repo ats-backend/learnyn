@@ -23,13 +23,14 @@ class SubjectSerializer(ModelSerializer):
 
 class ClassroomSerializer(ModelSerializer):
     url = HyperlinkedIdentityField(view_name="school_api:classroom_details_update_delete", read_only=True)
-    
+    subjects = SubjectSerializer(many=True)
     class Meta:
         model = Classroom
-        fields = ("name", "category", "subject", "description", 'url')
+        fields = ("name", "category", "subjects", "description", 'url')
         
         
 class ClassroomDetailSerializer(ModelSerializer):
+    subjects = SubjectSerializer(many=True)
     class Meta:
         model = Classroom
-        fields = ("name", "category", "subject", "description")
+        fields = ("name", "category", "subjects", "description")
