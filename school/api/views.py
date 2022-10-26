@@ -32,7 +32,7 @@ class ListCreateSubjectAPIView(ListCreateAPIView):
     
     
     
-class DetailsUpdateDestroySubjectAPIView(ListCreateAPIView):
+class DetailsUpdateDestroySubjectAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Subject.active_objects.all()
     serializer_class = SubjectSerializer
     permission_classes = (IsSuperUserOrReadOnly, )
