@@ -1,31 +1,99 @@
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.views import APIView
 
-from students.forms import StudentForm
-from accounts.views import ClassroomMixin
 from classadmins.models import ClassAdmin
-from students.models import Student
-from helpers.utils import send_mail, send_password_reset_mail
-from school.models import Classroom
-
-# Create your views here.
-
-
-class AddStudentAPIView(APIView):
-    pass
+from helpers.utils import send_mail
+from ..models import Student
+from .permissions import IsSchoolAdminOrClassAdmin
+from .serializers import StudentSerializer
 
 
-class StudentListAPIView(APIView):
-    pass
+class StudentListAPIView(ListCreateAPIView):
+    queryset = Student.objects.all()
+    permission_classes = [IsSchoolAdminOrClassAdmin]
+    serializer_class = StudentSerializer
+
+    def get_queryset(self):
+        if ClassAdmin.active_objects.filter(
+                id=self.request.user.id
+        ).exists():
+            class_admin = ClassAdmin.active_objects.filter(
+                id=self.request.user.id
+            ).first()
+            return class_admin.classroom.students.all()
+        return self.queryset
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            student = serializer.save()
+            subject = "Welcome to Learnyn, your new student account is ready"
+            from rest_framework.reverse import reverse
+            uid = urlsafe_base64_encode(force_bytes(student.id))
+            password_url = reverse('accounts_api:api_set_password', args=[uid])
+            action_url = str(get_current_site(self.request)) + password_url
+            send_mail(
+                receiver=student,
+                subject=subject,
+                action_url=action_url
+            )
+            return Response(
+                {
+                    'success': True,
+                    'data': serializer.data,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {
+                'success': False,
+                'data': serializer.errors,
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 
-class StudentDetailAPIView(APIView):
-    pass
+class StudentDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Student.active_objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = [IsSchoolAdminOrClassAdmin]
+
+    def delete(self, request, *args, **kwargs):
+        student = self.get_object()
+        if student:
+            student.is_deleted = True
+            student.save()
+
+            return Response({
+                'success': True,
+                'message': "Deleted successfully"
+            }, status=status.HTTP_200_OK)
+        return Response({
+            'success': False,
+            'message': "The requested object not found"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UploadStudentAPIView(APIView):
-    pass
+class SuspendStudentAPIVIew(GenericAPIView):
+    queryset = Student.active_objects.all()
+    permission_classes = [IsSchoolAdminOrClassAdmin]
 
-
-class SuspendStudentAPIVIew(APIView):
-    pass
-
+    def put(self, request, *args, **kwargs):
+        try:
+            class_admin = self.get_object()
+            class_admin.is_suspended = not class_admin.is_suspended
+            class_admin.save()
+            return Response({
+                'success': True,
+                'suspended': class_admin.is_suspended
+            }, status=status.HTTP_200_OK)
+        except:
+            return Response({
+                'success': False,
+                'error': "No such class admin exist"
+            }, status=status.HTTP_400_BAD_REQUEST)

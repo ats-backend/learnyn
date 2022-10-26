@@ -71,7 +71,7 @@ class AddClassAdminView(ClassroomMixin, LoginRequiredMixin, UserPassesTestMixin,
             **form.cleaned_data
         )
         subject = "Welcome to Learnyn, your new account is ready"
-        password_url = reverse('accounts:set-password', args=[class_admin.id])
+        password_url = reverse('accounts_api:api_set_password', args=[class_admin.id])
         action_url = str(get_current_site(self.request)) + password_url
         send_mail(
             receiver=class_admin,

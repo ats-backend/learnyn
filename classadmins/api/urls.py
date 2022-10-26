@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (
-    AddClassAdminAPIView, AssignClassAdminAPIView, ClassAdminListAPIView,
+    AssignClassAdminAPIView, ClassAdminListAPIView,
     ClassAdminDetailAPIView, SuspendClassAdminAPIView, UnassignClassAdminAPIView
 )
 

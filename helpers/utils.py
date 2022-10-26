@@ -26,17 +26,16 @@ def send_mail(receiver, subject, action_url):
     mail = EmailMessage(subject, message, to=[receiver.email], from_email='noreply@learnyn.com')
 
     mail.send()
+    return
 
 
 def send_password_reset_mail(email_body: Dict, context: Dict):
+
     """
        Send mail function to the specified email
        """
-    print(email_body)
-    print(context)
     try:
         message_template = get_template("password_mail.html").render(context)
-
         subject = email_body['subject']
         message = message_template
         email_from = settings.EMAIL_HOST_USER
@@ -48,9 +47,6 @@ def send_password_reset_mail(email_body: Dict, context: Dict):
             email_from,
             to=[recipient_list]
         )
-        print(message)
-        print(context)
-        print(msg)
         msg.send()
         print("email sent successfully")
     except Exception as e:
