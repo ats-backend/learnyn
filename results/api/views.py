@@ -67,6 +67,27 @@ class ResultCreateAPIView(CreateAPIView):
     serializer_class = ResultCreateSerializer
     permission_classes = (permissions.IsAuthenticated, IsClassAdminOrSchoolAdmin)
 
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            student = serializer.data['student']
+            student_result = Result.objects.filter(student_id=student)
+            student_result_data = [{
+                'subject': item.subject.name,
+                'first_assessment_score': item.first_assessment_score,
+                'second_assessment_score': item.second_assessment_score,
+                'exam_score': item.exam_score
+            } for item in student_result]
+            return Response({
+                'success': True,
+                **serializer.data,
+                'result': student_result_data
+            })
+        return Response({
+            'error': serializer.errors
+        })
+
 
 class CheckResultAPIView(GenericAPIView):
     serializer_class = CheckResultTokenSerializer
