@@ -1,4 +1,6 @@
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -22,7 +24,8 @@ class ClassAdminListAPIView(ListCreateAPIView):
         if serializer.is_valid():
             class_admin = serializer.save()
             subject = "Welcome to Learnyn, your new account is ready"
-            password_url = reverse('accounts_api:api_set_password', args=[class_admin.id])
+            uid = urlsafe_base64_encode(force_bytes(class_admin.id))
+            password_url = reverse('accounts_api:api_set_password', args=[uid])
             action_url = str(get_current_site(self.request)) + password_url
             send_mail(
                 receiver=class_admin,

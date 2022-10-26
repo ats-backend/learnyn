@@ -3,44 +3,44 @@ from django.contrib.auth.models import User
 
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
+
+from accounts.api.token import get_token
+from accounts.models import ResetPasswordToken
 
 
 class RegisterAdminSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, required=True)
     password2 = serializers.CharField(write_only=True, required=True)
+    username = serializers.CharField(required=False)
 
     class Meta:
         model = User
         fields = [
             'first_name',
             'last_name',
-            'username',
             'email',
             'password',
-            'password2'
+            'password2',
+            'username'
         ]
 
-    def validate_email(self):
-        email = self.validated_data.get('email')
-        if User.objects.filter(email=email).exists():
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
             raise serializers.ValidationError(
                 "A user with that email already exist"
             )
-        return email
+        return value
 
-    def validate_username(self):
-        email = self.validated_data.get('email')
-        username = email.split('@')[0]
-        return username
-
-    def validate_password(self):
-        password = self.validated_data.get('password')
-        password2 = self.validated_data.get('password2')
+    def validate(self, attrs):
+        email = attrs['email']
+        attrs['username'] = email.split('@')[0]
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
         if password != password2:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
 
-        return password, password2
+        return attrs
 
     def create(self, validated_data):
         password2 = validated_data.pop('password2')
@@ -51,15 +51,6 @@ class RegisterAdminSerializer(serializers.ModelSerializer):
         user.is_staff = True
         user.save()
         return user
-
-
-def get_token(user):
-    refresh = RefreshToken.for_user(user)
-    tokens = {
-        'access': str(refresh.access_token),
-        'refresh': str(refresh)
-    }
-    return tokens
 
 
 class LoginSerializer(serializers.Serializer):
@@ -107,3 +98,19 @@ class SetPasswordSerializer(serializers.Serializer):
                 "Both passwords must match"
             )
         return attrs
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "User with that email not found"
+            )
+        return value
+
+
+class ResetPasswordTokenSerializer(serializers.Serializer):
+    token = serializers.IntegerField()
+

@@ -1,4 +1,6 @@
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -32,7 +34,8 @@ class StudentListAPIView(ListCreateAPIView):
             student = serializer.save()
             subject = "Welcome to Learnyn, your new student account is ready"
             from rest_framework.reverse import reverse
-            password_url = reverse('accounts_api:api_set_password', args=[student.id])
+            uid = urlsafe_base64_encode(force_bytes(student.id))
+            password_url = reverse('accounts_api:api_set_password', args=[uid])
             action_url = str(get_current_site(self.request)) + password_url
             send_mail(
                 receiver=student,
