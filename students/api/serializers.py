@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from ..models import Student
-from school.models import Classroom
+from school.api.serializer import ClassroomSerializer
+from school.models import Classroom, Subject
 
 
 class StudentSerializer(serializers.ModelSerializer):
@@ -13,6 +14,7 @@ class StudentSerializer(serializers.ModelSerializer):
     parent_firstname = serializers.CharField(required=True)
     parent_lastname = serializers.CharField(required=True)
     parent_email = serializers.EmailField(required=True)
+    classroom = ClassroomSerializer()
 
     # classroom = serializers
 
