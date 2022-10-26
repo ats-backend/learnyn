@@ -7,6 +7,13 @@ from school.api.serializer import ClassroomSerializer
 from school.models import Classroom, Subject
 
 
+class UserClassroom(serializers.ModelSerializer):
+
+    class Meta:
+        model = Classroom
+        fields = ('name',)
+
+
 class StudentSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     first_name = serializers.CharField(required=True)
@@ -14,7 +21,7 @@ class StudentSerializer(serializers.ModelSerializer):
     parent_firstname = serializers.CharField(required=True)
     parent_lastname = serializers.CharField(required=True)
     parent_email = serializers.EmailField(required=True)
-    classroom = ClassroomSerializer()
+    # classs = UserClassroom()
 
     # classroom = serializers
 
@@ -26,12 +33,16 @@ class StudentSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'classroom',
+            'student_class',
             'parent_firstname',
             'parent_lastname',
             'parent_email',
             'is_suspended',
             'is_deleted'
         )
+        extra_kwargs = {
+            'classroom': {'write_only': True}
+        }
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():

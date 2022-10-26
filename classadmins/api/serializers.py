@@ -11,7 +11,7 @@ class ClassAdminSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-    classroom = ClassroomSerializer()
+    # classroom = ClassroomSerializer()
     # classroom = serializers
 
     class Meta:
@@ -21,9 +21,13 @@ class ClassAdminSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
             'classroom',
+            'for_class',
             'is_suspended',
             'is_deleted'
         )
+        extra_kwargs = {
+            'classroom': {'write_only': True}
+        }
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():

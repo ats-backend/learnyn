@@ -39,6 +39,9 @@ class Student(User):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def student_class(self):
+        return self.classroom.name
+
 
 @receiver(pre_save, sender=Student)
 def set_username(sender, instance, **kwargs):

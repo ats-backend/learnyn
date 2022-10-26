@@ -37,6 +37,9 @@ class ClassAdmin(User):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def for_class(self):
+        return self.classroom.name
+
 
 @receiver(pre_save, sender=ClassAdmin)
 def set_username(sender, instance, **kwargs):
