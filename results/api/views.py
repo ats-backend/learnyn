@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.sites.shortcuts import get_current_site
+from django.db.models import Exists, OuterRef, Subquery
 from django.http import HttpResponse
 from django.urls import reverse
 from rest_framework import status, permissions
@@ -23,11 +24,15 @@ class ResultListAPIView(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_superuser:
-            result = Result.objects.all().values_list('student', flat=True)
-            student = Student.objects.filter(id__in=result)
+            # result = Result.objects.all().values_list('student', flat=True)
+            # student = Student.objects.filter(id__in=result)
+            student = Student.objects.annotate(has_result=Exists(Result.objects.filter(student=OuterRef('id')))).filter(has_result=True)
+
         elif ClassAdmin.objects.filter(id=request.user.id).exists():
-            result = Result.objects.filter(student__classroom__teacher=request.user).values_list('student', flat=True)
-            student = Student.objects.filter(id__in=result)
+            # result = Result.objects.filter(student__classroom__teacher=request.user).values_list('student', flat=True)
+            # student = Student.objects.filter(id__in=result)
+            student = Student.objects.filter(classroom__teacher=request.user).annotate(
+                has_result=Exists(Result.objects.filter(student=OuterRef('id')))).filter(has_result=True)
         else:
             return Response({"error": "You can not access this page"})
         serializer = ResultListSerializer(student, many=True)
