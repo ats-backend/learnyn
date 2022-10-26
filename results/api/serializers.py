@@ -6,7 +6,7 @@ from school.models import Classroom, Subject, Term, Session
 from students.models import Student
 
 
-class StudentSerializer(serializers.ModelSerializer):
+class StudentSerializer(serializers.Serializer):
     class Meta:
         model = Student
         fields = ('student_id', 'first_name', 'last_name')
@@ -28,6 +28,7 @@ class SubjectResultSerializer(serializers.ModelSerializer):
 
 class ResultCreateSerializer(serializers.ModelSerializer):
     result = SubjectResultSerializer(many=True, required=False)
+    # student = StudentSerializer()
 
     class Meta:
         model = Result
