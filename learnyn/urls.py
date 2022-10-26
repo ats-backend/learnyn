@@ -36,6 +36,7 @@ urlpatterns += [
     path('api', HomeAPIView.as_view(), name='api_home'),
     path('api/accounts/', include('accounts.api.urls')),
     path('api/class-admins/', include('classadmins.api.urls')),
+    path("api/school/", include("school.api.urls")),
     path('api/students/', include('students.api.urls')),
     path('api/results/', include('results.api.urls')),
 ]
