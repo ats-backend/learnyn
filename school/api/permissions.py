@@ -19,5 +19,10 @@ class IsSuperUserOrReadOnly(BasePermission):
 class IsSuperUserOrClassAdminOrReadOnly(BasePermission):
     
     def has_object_permission(self, request, obj, view):
-        class_admin =  ClassAdmin.active_objects.filter(id=request.user.id).first()
-        return bool(request.user.is_superuser or (class_admin.classroom == obj.id and request.method == "GET"))
+        if not request.user.is_superuser:
+            try:
+                class_admin =  ClassAdmin.active_objects.get(id=request.user.id)
+            except:
+                return False
+            return bool(class_admin.classroom == obj.id and request.method == "GET")
+        return bool(request.user.is_superuser)
