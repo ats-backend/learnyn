@@ -4,11 +4,17 @@ from results.models import Result, Token
 from results.utils import send_mail
 from school.models import Classroom, Subject, Term, Session
 from students.models import Student
-# from students.api.serializers import StudentSerializer
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ('student_id', 'first_name', 'last_name')
 
 
 class ResultListSerializer(serializers.ModelSerializer):
-    student = serializers.
+    student = StudentSerializer()
+
     class Meta:
         model = Result
         fields = ('student',)
@@ -79,4 +85,3 @@ class ResultSerializer(serializers.ModelSerializer):
 
 class CheckResultTokenSerializer(serializers.Serializer):
     user_token = serializers.CharField()
-
