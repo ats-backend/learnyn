@@ -87,3 +87,23 @@ class LoginSerializer(serializers.Serializer):
             )
         data = get_token(user)
         return data
+
+
+class SetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(
+        required=True,
+        style={'input_type': 'password'}
+    )
+    password2 = serializers.CharField(
+        required=True,
+        style={'input_type': 'password'}
+    )
+
+    def validate(self, attrs):
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
+        if password2 != password:
+            raise serializers.ValidationError(
+                "Both passwords must match"
+            )
+        return attrs

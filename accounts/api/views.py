@@ -4,7 +4,8 @@ from rest_framework.views import APIView
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .serializers import LoginSerializer, RegisterAdminSerializer
+from classadmins.models import ClassAdmin
+from .serializers import LoginSerializer, RegisterAdminSerializer, SetPasswordSerializer
 
 
 class LoginAPIView(TokenObtainPairView):
@@ -42,4 +43,20 @@ class SignupAPIView(APIView):
 
 
 class SetPasswordAPIView(APIView):
-    pass
+
+    def post(self, request, *args, **kwargs):
+        serializer = SetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            class_admin = ClassAdmin.objects.filter(id=kwargs['pk']).first()
+            class_admin.set_password(serializer.data['password'])
+            class_admin.save()
+            print(class_admin, serializer.data)
+            return Response({
+                'success': True,
+                'message': "Password set successfully"
+            })
+
+        return Response({
+            'success': False,
+            'data': serializer.errors
+        })
