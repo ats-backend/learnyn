@@ -46,7 +46,7 @@ def send_password_reset_mail(email_body: Dict, context: Dict):
             subject,
             message,
             email_from,
-            to=[recipient_list]
+            to=[recipient_list],
         )
         print(message)
         print(context)

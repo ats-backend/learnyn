@@ -136,7 +136,7 @@ class ResetPasswordView(View):
         }
 
         email_body = {
-            "subjects": "Password Reset From Learnyn",
+            "subject": "Password Reset From Learnyn",
             "recipient": email,
         }
 
