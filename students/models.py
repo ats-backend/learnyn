@@ -11,7 +11,10 @@ from school.models import Classroom
 class ActiveObject(UserManager):
 
     def get_queryset(self):
-        return super().get_queryset().filter(is_suspended=False)
+        return super().get_queryset().filter(
+            is_suspended=False,
+            is_deleted=False
+        )
 
 
 class Student(User):
@@ -25,6 +28,7 @@ class Student(User):
     parent_lastname = models.CharField(max_length=40)
     parent_email = models.EmailField(max_length=200)
     is_suspended = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     active_objects = ActiveObject()
     objects = UserManager()
@@ -34,6 +38,9 @@ class Student(User):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def student_class(self):
+        return self.classroom.name
 
 
 @receiver(pre_save, sender=Student)

@@ -45,17 +45,17 @@ class AddStudentResultView(LoginRequiredMixin, View):
             student = form.cleaned_data.get('student')
             r_term = form.cleaned_data.get('r_term')
             r_session = form.cleaned_data.get('session')
-            print(r_term, type(r_term))
-            print(r_session, type(r_session))
+            # print(r_term, type(r_term))
+            # print(r_session, type(r_session))
             try:
                 term = Term.objects.get_or_create(session=r_session, term=r_term)
                 get_term = Term.objects.get(term=term[0])
-                print(get_term.id)
+                # print(get_term.id)
             except IntegrityError:
                 return redirect('results:add-result')
 
             if not Result.objects.filter(student=student, session=r_session, term=get_term).exists():
-                print(student)
+                # print(student)
                 for result in result_form.cleaned_data:
                     Result.objects.create(
                         student=student,
@@ -71,9 +71,9 @@ class AddStudentResultView(LoginRequiredMixin, View):
                 )
             messages.error(self.request, 'Make sure the student result is not exists before..')
             return redirect('results:add-result')
-        print(form.errors)
-        print(result_form.errors)
-        print(result_form.non_form_errors())
+        # print(form.errors)
+        # print(result_form.errors)
+        # print(result_form.non_form_errors())
         return redirect('results:add-result')
 
 
@@ -83,11 +83,11 @@ class ResultView(LoginRequiredMixin, View):
         # students = []
         if request.user.is_superuser:
             results = Result.objects.all().values_list('student', flat=True)
-            print(results)
+            # print(results)
             students = Student.objects.filter(id__in=results).exclude(is_suspended=True)
         elif ClassAdmin.objects.filter(id=request.user.id).exists():
             results = Result.objects.filter(student__classroom__teacher=request.user).values_list('student', flat=True)
-            print(results)
+            # print(results)
             students = Student.objects.filter(id__in=results).exclude(is_suspended=True)
         else:
             messages.info(self.request, "You need to obtain token to access this page.")
@@ -131,11 +131,11 @@ class CheckResultView(LoginRequiredMixin, View):
 
         if form.is_valid():
             user_token = form.cleaned_data.get('token')
-            print(user_token)
-            print(type(user_token))
+            # print(user_token)
+            # print(type(user_token))
             try:
                 student_id = Token.objects.get(token=user_token)
-                print(student_id)
+                # print(student_id)
             except Token.DoesNotExist:
                 return redirect('results:check-result')
             token = Token.objects.filter(token=user_token)
@@ -165,15 +165,15 @@ class UploadResultView(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         result_raw_file = request.FILES.get('result_file')
-        print(result_raw_file, type(result_raw_file))
+        # print(result_raw_file, type(result_raw_file))
         if result_raw_file:
             result_file = result_raw_file.read().decode('utf-8')
-            print(result_file)
+            # print(result_file)
         else:
             return redirect('results:result')
         current_student_id = {}
         for data in csv.DictReader(io.StringIO(result_file)):
-            print(data)
+            # print(data)
             student = Student.objects.filter(student_id=data['student_id']).first()
             session = Session.objects.filter(name_of_session=data['session']).first()
             subject = Subject.objects.filter(name__icontains=data['subject']).first()
@@ -191,17 +191,17 @@ class UploadResultView(LoginRequiredMixin, View):
                     'term': result.term,
                     'session': result.session
                 })
-                user_token = Token.objects.create(student=result.student)
-                subject = "Result"
-                send_mail(student, subject, user_token=user_token.token)
+                # user_token = Token.objects.create(student=result.student)
+                # subject = "Result"
+                # send_mail(student, subject, user_token=user_token.token)
             else:
                 Result.objects.create(student=current_student_id['student'], term=current_student_id['term'],
                                       session=current_student_id['session'], subject=subject,
                                       first_assessment_score=first_assessment_score,
                                       second_assessment_score=second_assessment_score, exam_score=exam_score)
-                user_token = Token.objects.create(student=result.student)
-                subject = "Result"
-                send_mail(student, subject, user_token=user_token.token)
+                # user_token = Token.objects.create(student=result.student)
+                # subject = "Result"
+                # send_mail(student, subject, user_token=user_token.token)
 
         return HttpResponseRedirect(
             reverse('results:result')
