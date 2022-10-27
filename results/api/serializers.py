@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
+from classadmins.models import ClassAdmin
 from results.models import Result, Token
 from results.utils import send_mail
 from school.models import Classroom, Subject, Term, Session
 from students.models import Student
 
 
-class StudentSerializer(serializers.Serializer):
+class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ('student_id', 'first_name', 'last_name')
@@ -36,9 +37,12 @@ class ResultCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         request = self.context.get('request')
-        class_subjects = Subject.objects.filter(classroom__teacher=request.user)
+        if request.user.is_superuser:
+            class_subjects = Subject.objects.filter()
+        elif ClassAdmin.objects.filter(id=request.user.id):
+            class_subjects = Subject.objects.filter(classroom__teacher=request.user)
 
-        if len(attrs['result']) != class_subjects.count():
+        if len(attrs['result']) != 9:
             raise serializers.ValidationError("You have to supply result of all subject for each student")
 
         if Result.objects.filter(student=attrs['student'], session=attrs['session'], term=attrs['term']).exists():
